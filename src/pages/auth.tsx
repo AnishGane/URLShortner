@@ -6,7 +6,7 @@ import SignUpForm from "@/components/forms/signup-form";
 const AuthPage = () => {
     const [searchParams] = useSearchParams();
     return (
-        <div className='w-full h-screen flex flex-col justify-center items-center'>
+        <div className='w-full my-32 flex flex-col justify-center items-center'>
             <h1 className="text-xl sm:text-3xl font-medium">
                 {searchParams.get("createNew") ? "Hold on! Let's Login first." : " Login/Signup"}
             </h1>

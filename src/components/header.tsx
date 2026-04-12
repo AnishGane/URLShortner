@@ -26,7 +26,7 @@ const Header = () => {
                     {!user ? (
                         <>
                             <Button onClick={() => navigate("/auth")} className={"cursor-pointer px-4 py-4 rounded-md"}>Sign In</Button>
-                            <Button variant="outline" className={"cursor-pointer px-4 py-4 rounded-md"}>Sign Up</Button>
+                            <Button variant="outline" onClick={() => navigate("/auth")} className={"cursor-pointer px-4 py-4 rounded-md"}>Sign Up</Button>
                         </>
                     ) : (
                         <DropdownMenu>

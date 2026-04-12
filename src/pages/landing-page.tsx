@@ -49,6 +49,7 @@ const LandingPage = () => {
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 md:my-16 w-full md:w-1/2 mx-auto">
                 <Input
                     type="url"
+                    className="py-5"
                     value={originalUrl}
                     onChange={(e) => setOriginalUrl(e.target.value)}
                     placeholder="e.g: https://google.com" />
