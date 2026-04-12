@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
         })
 
-        if (!data.user) {
+        if (!data) {
             setLoading(false);
             throw new Error("Signup failed");
         } if (error) {

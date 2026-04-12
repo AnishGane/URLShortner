@@ -46,7 +46,7 @@ const SignupForm = () => {
   }
 
   return (
-    <Card className="mt-2">
+    <Card className="mt-4">
       <CardHeader className="text-center">
         <CardTitle className="text-xl font-medium">Sign up here</CardTitle>
         <CardDescription className="text-[12px]">Enter your details to create an account.</CardDescription>

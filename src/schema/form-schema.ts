@@ -34,4 +34,3 @@ export const signUpFormSchema = z.object({
 
 export type signUpFormSchemaType = z.infer<typeof signUpFormSchema>;
 export type loginFormSchemaType = z.infer<typeof loginFormSchema>;
-// onChange={(e) => field.onChange(e.target.files?.[0])}

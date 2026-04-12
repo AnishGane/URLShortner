@@ -41,7 +41,7 @@ const LoginForm = () => {
     }
 
     return (
-        <Card className="mt-2">
+        <Card className="mt-4">
             <CardHeader className="text-center">
                 <CardTitle className="text-xl font-medium">Login to your account</CardTitle>
                 <CardDescription className="text-[12px]">Enter your email and password.</CardDescription>

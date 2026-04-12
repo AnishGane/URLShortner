@@ -16,7 +16,7 @@ const Header = () => {
     const navigate = useNavigate();
     const user = false;
     return (
-        <header className="sticky top-0 border-b border-b-border bg-background/20 backdrop-blur-2xl">
+        <header className="sticky top-0 border-b border-b-border/60 z-30 bg-background/20 backdrop-blur-2xl">
             <nav className="max-w-7xl mx-auto p-4 flex justify-between items-center">
                 <Link to={"/"}>
                     <h1 className="font-semibold text-2xl">URLShortner</h1>
