@@ -5,6 +5,7 @@ import AuthPage from "./pages/auth"
 import DashboardPage from "./pages/dashboard"
 import LinkPage from "./pages/link"
 import RedirectLink from "./pages/redirect-link"
+import ProtectedRoute from "./components/protected-route"
 
 const router = createBrowserRouter([
   {
@@ -18,13 +19,25 @@ const router = createBrowserRouter([
         element: <AuthPage />
       }, {
         path: "/dashboard",
-        element: <DashboardPage />
+        element: (
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        )
       }, {
         path: "/link/:id",
-        element: <LinkPage />
+        element: (
+          <ProtectedRoute>
+            <LinkPage />
+          </ProtectedRoute>
+        )
       }, {
         path: "/:id",
-        element: <RedirectLink />
+        element: (
+          <ProtectedRoute>
+            <RedirectLink />
+          </ProtectedRoute>
+        )
       }
     ]
   }

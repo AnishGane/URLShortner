@@ -10,11 +10,30 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { LinkIcon, LogOut } from "lucide-react";
+import { LinkIcon, Loader2, LogOut } from "lucide-react";
+import { useAuthContext } from "@/context/auth-context";
+import { toast } from "sonner";
 
 const Header = () => {
     const navigate = useNavigate();
-    const user = false;
+    const { user, logoutUser, loading } = useAuthContext();
+
+    const getDisplayNameFromEmail = (email: string) => {
+        const upperCaseEmail = email.charAt(0).toUpperCase() + email.slice(1).replace(/[0-9]/g, '');
+        const parts = upperCaseEmail.split("@");
+        return parts[0];
+    }
+
+    const handleLogout = async () => {
+        try {
+            await logoutUser();
+            navigate("/");
+        } catch (error) {
+            console.log(error);
+            toast.error("Error logging out");
+        }
+    }
+
     return (
         <header className="sticky top-0 border-b border-b-border/60 z-30 bg-background/20 backdrop-blur-2xl">
             <nav className="max-w-7xl mx-auto p-4 flex justify-between items-center">
@@ -32,21 +51,42 @@ const Header = () => {
                         <DropdownMenu>
                             <DropdownMenuTrigger>
                                 <Avatar>
-                                    <AvatarImage src="https://github.com/shadcn.png" />
-                                    <AvatarFallback>CN</AvatarFallback>
+                                    {user?.user_metadata?.profile_pic ? (
+                                        <>
+                                            <AvatarImage src={user?.user_metadata?.profile_pic} />
+                                            <AvatarFallback>URL</AvatarFallback>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <AvatarImage src="https://github.com/shadcn.png" />
+                                            <AvatarFallback>CN</AvatarFallback>
+                                        </>
+                                    )}
                                 </Avatar>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className={"mt-1"}>
                                 <DropdownMenuGroup>
-                                    <DropdownMenuLabel>Anish Gane</DropdownMenuLabel>
+                                    <DropdownMenuLabel>{user?.user_metadata?.name || getDisplayNameFromEmail(user.email)}</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem className={"p-1.5 rounded-sm cursor-pointer"}>
                                         <LinkIcon />
                                         My Links
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem variant="destructive" className={"p-1.5 rounded-sm cursor-pointer"}>
-                                        <LogOut />
-                                        Logout
+                                    <DropdownMenuItem
+                                        onPointerDown={(e) => e.preventDefault()}
+                                        onSelect={(e) => {
+                                            e.preventDefault(); handleLogout()
+                                        }} variant="destructive" className={"p-1.5 rounded-sm cursor-pointer"}>
+                                        {loading ? (
+                                            <>
+                                                <Loader2 className="animate-spin" />
+                                                <span className="line-clamp-1">Logging out...</span>
+                                            </>) : (
+                                            <>
+                                                <LogOut />
+                                                Logout
+                                            </>
+                                        )}
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                             </DropdownMenuContent>
