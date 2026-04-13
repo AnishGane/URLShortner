@@ -76,8 +76,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 throw new Error(error.message);
             }
         } catch (error) {
-            console.log("Error in logoutUser: ", error.message);
+            console.error("Error in logoutUser:", error instanceof Error ? error.message : error);
         } finally {
+            setUser(null);
+            setSession(null);
             setLoading(false);
         }
     }

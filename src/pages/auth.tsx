@@ -14,9 +14,9 @@ const AuthPage = () => {
 
     useEffect(() => {
         if (isAuthenticated && !loading) {
-            navigate(`${longLink ? `/dashboard?createNew=${longLink}` : '/dashboard'}`);
+            navigate(longLink ? `/dashboard?createNew=${longLink}` : '/dashboard');
         }
-    }, [isAuthenticated, loading]);
+    }, [isAuthenticated, loading, navigate, longLink]);
 
     return (
         <div className='w-full min-h-screen flex flex-col justify-center items-center'>
