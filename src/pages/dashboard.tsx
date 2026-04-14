@@ -2,21 +2,38 @@ import CreateLinkDialog from "@/components/create-link-dialog";
 import LinkCard from "@/components/link-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { useURLContext } from "@/context/url-context";
+import { useAuthContext } from "@/context/auth-context";
+import { useClicks } from "@/hooks/useClicks";
+import { useRealtimeClicks } from "@/hooks/useRealtimeClicks";
+import { useRealtimeUrls } from "@/hooks/useRealtimeUrls";
+import { useUrls } from "@/hooks/useUrls";
 import DashboardSkeleton from "@/skeletons/dashboard-skeleton";
 import { SearchIcon } from "lucide-react";
 import { useState, useMemo } from "react"
 
 const DashboardPage = () => {
     const [searchQuery, setSearchQuery] = useState("");
-    const { urls, clicks, loading } = useURLContext();
+    const { user } = useAuthContext();
+    const userId = user?.id;
+
+    const { data: urls = [], isLoading: urlsLoading } = useUrls(userId);
+    const urlIds = useMemo(() => urls.map((u: any) => u.id), [urls]);
+    const { data: clicks = [], isLoading: clicksLoading } = useClicks(urlIds);
+
+    // Realtime sync
+    useRealtimeUrls(userId);
+    useRealtimeClicks(urlIds);
+
+    const loading = urlsLoading || clicksLoading;
 
     const filteredUrls = useMemo(() =>
-        (urls || []).filter((url) =>
-            url.title.toLowerCase().includes(searchQuery.toLowerCase())
-        ), [urls, searchQuery]);
+        urls.filter((url: any) =>
+            (url.title || "").toLowerCase().includes(searchQuery.toLowerCase())
+        ),
+        [urls, searchQuery]
+    );
 
-    if (loading) return <DashboardSkeleton />
+    if (loading) return <DashboardSkeleton />;
 
     return (
         <div className="my-8">

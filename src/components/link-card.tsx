@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "./ui/button"
 import React, { useState } from "react"
-import { useURLContext } from "@/context/url-context"
+import { useDeleteUrl } from "@/hooks/useDeleteUrl"
 
 const LinkCard = ({ url }: { url: any }) => {
     const [isCopied, setIsCopied] = useState(false);
-    const { loading, deleteUrl } = useURLContext();
+    const { mutate: deleteUrl, isPending: isDeleting } = useDeleteUrl();
 
     const copyShortUrl = () => {
         navigator.clipboard.writeText(url.short_url);
@@ -75,9 +75,10 @@ const LinkCard = ({ url }: { url: any }) => {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
+                                onSelect={(e) => e.preventDefault()}
                                 onClick={() => deleteUrl(url.id)}
                                 variant="destructive" className={"cursor-pointer rounded-sm"}>
-                                {loading ? (
+                                {isDeleting ? (
                                     <>
                                         <Loader2 className="animate-spin" />
                                         Deleting...
@@ -93,7 +94,7 @@ const LinkCard = ({ url }: { url: any }) => {
                     </DropdownMenu>
                 </CardTitle>
                 <CardContent className="p-0">
-                    {loading ? (
+                    {false ? (
                         <div className="h-6 w-40 bg-muted animate-pulse rounded" />
                     ) : (
                         <p className="underline text-blue-400 text-lg font-medium mt-2">

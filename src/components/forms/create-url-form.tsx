@@ -2,18 +2,20 @@ import { createUrlSchema, type createUrlSchemaType } from "@/schema/form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { useAuthContext } from "@/context/auth-context"
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import QRCode from "react-qrcode-logo";
 import { useRef } from "react";
+import { useCreateUrl } from "@/hooks/useCreateUrl";
+import { toast } from "sonner";
 
 const CreateUrlForm = ({ longLink }: { longLink?: string }) => {
     const { user } = useAuthContext();
-    const navigate = useNavigate();
-    const ref = useRef(null);
+    // const navigate = useNavigate();
+    const ref = useRef<any>(null);
 
     const form = useForm<createUrlSchemaType>({
         resolver: zodResolver(createUrlSchema),
@@ -24,10 +26,61 @@ const CreateUrlForm = ({ longLink }: { longLink?: string }) => {
         }
     })
 
+    const { mutate: createUrl, isPending } = useCreateUrl();
+
     const watchedUrl = form.watch("original_url");
 
     async function onSubmit(data: createUrlSchemaType) {
-        console.log(data);
+        try {
+            if (!ref.current) {
+                throw new Error("QR code not available. Please enter a URL first.");
+            }
+
+            // get canvas from QRCode
+            const canvas = (ref.current as any).canvasRef?.current;
+            if (!canvas) {
+                toast.error("Failed to generate QR code");
+                return;
+            }
+
+            //  convert canvas → blob
+            const blob: Blob | null = await new Promise((resolve) =>
+                canvas.toBlob(resolve, "image/png")
+            );
+            if (!blob) throw new Error("QR generation failed");
+
+            if (!user?.id) {
+                toast.error("You must be logged in to create a link");
+                return;
+            }
+
+            // urls (table) contains the isUnique constraint so needed to normalize it before creating link to solve the duplicate key error
+            const normalizedCustomUrl = data.custom_url?.trim() ? data.custom_url?.trim() : null;
+
+            createUrl({
+                ...data,
+                custom_url: normalizedCustomUrl,
+                userId: user?.id,
+                qrcode: blob
+            }, {
+                onSuccess: () => {
+                    // optional: redirect to link page
+                    // navigate(`/link/${res.id}`);
+
+                    toast.success("Link created successfully");
+
+                    // reset form
+                    form.reset();
+                },
+                onError: (error) => {
+                    toast.error(error instanceof Error ? error.message : "Failed to create link");
+                }
+            })
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "An unexpected error occurred";
+            console.error("Error in creating url:", message);
+            toast.error(message);
+        }
     }
 
     return (
@@ -116,7 +169,12 @@ const CreateUrlForm = ({ longLink }: { longLink?: string }) => {
                             )}
                         />
                     </div>
-                    <Button type="submit" className={"py-5 cursor-pointer mt-4"}>Create</Button>
+                    <Button
+                        disabled={isPending}
+                        type="submit"
+                        className={"py-5 cursor-pointer mt-4"}>
+                        {isPending ? "Creating..." : "Create"}
+                    </Button>
                 </FieldGroup>
             </form>
         </div>
