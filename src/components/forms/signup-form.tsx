@@ -11,16 +11,19 @@ import {
 } from "@/components/ui/field"
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Loader2 } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
 import { useAuthContext } from "@/context/auth-context";
 import { toast } from "sonner";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
 
 const SignupForm = () => {
   const { loading, signupUser } = useAuthContext();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const longLink = searchParams.get("createNew");
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<signUpFormSchemaType>({
     resolver: zodResolver(signUpFormSchema),
@@ -52,19 +55,19 @@ const SignupForm = () => {
         <CardDescription className="text-[12px]">Enter your details to create an account.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form id="form-rhf-login" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="form-rhf-signup" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="name"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-login-name">
+                  <FieldLabel htmlFor="form-rhf-signup-name">
                     Name
                   </FieldLabel>
                   <Input
                     {...field}
-                    id="form-rhf-login-name"
+                    id="form-rhf-signup-name"
                     aria-invalid={fieldState.invalid}
                     placeholder="John Doe"
                     autoComplete="off"
@@ -82,12 +85,12 @@ const SignupForm = () => {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-login-email">
+                  <FieldLabel htmlFor="form-rhf-signup-email">
                     Email
                   </FieldLabel>
                   <Input
                     {...field}
-                    id="form-rhf-login-email"
+                    id="form-rhf-signup-email"
                     aria-invalid={fieldState.invalid}
                     placeholder="puthere@email.com"
                     autoComplete="off"
@@ -105,18 +108,25 @@ const SignupForm = () => {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-login-password">
+                  <FieldLabel htmlFor="form-rhf-signup-password">
                     Password
                   </FieldLabel>
-                  <Input
-                    {...field}
-                    id="form-rhf-login-password"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="******"
-                    autoComplete="off"
-                    type="password"
-                    className="py-4.5"
-                  />
+                  <InputGroup className="py-4.5">
+                    <InputGroupInput {...field}
+                      id="form-rhf-signup-password"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="******"
+                      autoComplete="off"
+                      type={showPassword ? "text" : "password"}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      {showPassword ? (
+                        <EyeIcon onClick={() => setShowPassword(false)} className="cursor-pointer" />
+                      ) : (
+                        <EyeOffIcon onClick={() => setShowPassword(true)} className="cursor-pointer" />
+                      )}
+                    </InputGroupAddon>
+                  </InputGroup>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -128,10 +138,10 @@ const SignupForm = () => {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-login-profile">
+                  <FieldLabel htmlFor="form-rhf-signup-profile">
                     Choose a profile picture
                   </FieldLabel>
-                  <Input className="cursor-pointer" onChange={(e) => field.onChange(e.target.files?.[0])} accept="image/*" id="form-rhf-login-profile" type="file" />
+                  <Input className="cursor-pointer" onChange={(e) => field.onChange(e.target.files?.[0])} accept="image/*" id="form-rhf-signup-profile" type="file" />
                   <FieldDescription className="text-[13px]">Select a picture to upload.</FieldDescription>
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -143,7 +153,7 @@ const SignupForm = () => {
         </form>
       </CardContent>
       <CardFooter>
-        <Button disabled={loading} type="submit" className={"w-full py-5.5 cursor-pointer"} form="form-rhf-login">
+        <Button disabled={loading} type="submit" className={"w-full py-5.5 cursor-pointer"} form="form-rhf-signup">
           {loading ? (
             <>
               <Loader2 className="animate-spin size-5 mr-2" />

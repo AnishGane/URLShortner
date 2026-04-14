@@ -10,13 +10,16 @@ import {
 import { Button } from "./ui/button"
 import React, { useState } from "react"
 import { useDeleteUrl } from "@/hooks/useDeleteUrl"
+import { Link } from "react-router-dom"
+
+const APP_URL = import.meta.env.VITE_APP_URL;
 
 const LinkCard = ({ url }: { url: any }) => {
     const [isCopied, setIsCopied] = useState(false);
     const { mutate: deleteUrl, isPending: isDeleting } = useDeleteUrl();
 
     const copyShortUrl = () => {
-        navigator.clipboard.writeText(url.short_url);
+        navigator.clipboard.writeText(`${APP_URL}${url.short_url}`);
         setIsCopied(true);
         setTimeout(() => {
             setIsCopied(false);
@@ -41,7 +44,9 @@ const LinkCard = ({ url }: { url: any }) => {
         <Card className="px-4 py-4.5 rounded-lg">
             <CardHeader>
                 <CardTitle className="text-xl flex items-center justify-between">
-                    {url.title}
+                    <Link to={`/link/${url.id}`}>
+                        <span className="hover:underline">{url.title}</span>
+                    </Link>
 
                     <DropdownMenu>
                         <DropdownMenuTrigger>

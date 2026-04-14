@@ -44,6 +44,7 @@ export const useCreateUrl = () => {
             custom_url,
             qr,
             user_id: userId,
+            qr_path: fileName,
           },
         ])
         .select();

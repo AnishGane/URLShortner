@@ -10,17 +10,23 @@ import {
 } from "@/components/ui/field"
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Loader2 } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
 import { useAuthContext } from "@/context/auth-context";
 import { toast } from "sonner"
 import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupInput,
+} from "@/components/ui/input-group"
+import { useState } from "react";
 
 const LoginForm = () => {
-
     const { loginUser, loading } = useAuthContext();
     const navigate = useNavigate();
     let [searchParams] = useSearchParams();
     const longLink = searchParams.get("createNew");
+    const [showPassword, setShowPassword] = useState(false);
 
     const form = useForm<loginFormSchemaType>({
         resolver: zodResolver(loginFormSchema),
@@ -80,15 +86,22 @@ const LoginForm = () => {
                                     <FieldLabel htmlFor="form-rhf-login-password">
                                         Password
                                     </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="form-rhf-login-password"
-                                        aria-invalid={fieldState.invalid}
-                                        placeholder="******"
-                                        autoComplete="off"
-                                        type="password"
-                                        className="py-4.5"
-                                    />
+                                    <InputGroup className="py-4.5">
+                                        <InputGroupInput {...field}
+                                            id="form-rhf-login-password"
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="******"
+                                            autoComplete="off"
+                                            type={showPassword ? "text" : "password"}
+                                        />
+                                        <InputGroupAddon align="inline-end">
+                                            {showPassword ? (
+                                                <EyeIcon onClick={() => setShowPassword(false)} className="cursor-pointer" />
+                                            ) : (
+                                                <EyeOffIcon onClick={() => setShowPassword(true)} className="cursor-pointer" />
+                                            )}
+                                        </InputGroupAddon>
+                                    </InputGroup>
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
                                     )}

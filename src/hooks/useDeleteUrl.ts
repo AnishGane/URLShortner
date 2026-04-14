@@ -7,11 +7,35 @@ export const useDeleteUrl = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error: clickError } = await supabase
-        .from("clicks")
-        .delete()
-        .eq("url_id", id);
-      if (clickError) throw new Error(clickError.message);
+      const { data, error: fetchError } = await supabase
+        .from("urls")
+        .select("qr_path")
+        .eq("id", id)
+        .single();
+      if (fetchError) {
+        throw new Error(fetchError.message);
+      }
+
+      if (data?.qr_path) {
+        const [storageRes, clicksRes] = await Promise.all([
+          supabase.storage.from("qr").remove([data.qr_path]),
+          supabase.from("clicks").delete().eq("url_id", id),
+        ]);
+
+        if (storageRes.error) {
+          console.warn("Storage delete failed:", storageRes.error.message);
+        }
+        if (clicksRes.error) {
+          throw new Error(clicksRes.error.message);
+        }
+      } else {
+        const { error: clicksError } = await supabase
+          .from("clicks")
+          .delete()
+          .eq("url_id", id);
+
+        if (clicksError) throw new Error(clicksError.message);
+      }
 
       const { error: urlError } = await supabase
         .from("urls")

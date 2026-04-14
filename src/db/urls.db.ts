@@ -11,3 +11,37 @@ export const getUrls = async (userId: string) => {
   }
   return data;
 };
+
+// get original_url and id
+export const getLongUrl = async (id: string) => {
+  const { data, error } = await supabase
+    .from("urls")
+    .select("original_url, id")
+    .or(`short_url.eq.${id}, custom_url.eq.${id}`)
+    .maybeSingle();
+  if (error) {
+    console.error(error.message);
+    throw new Error("Error fetching long URL");
+  }
+  if (!data) {
+    throw new Error("URL not found");
+  }
+  return data;
+};
+
+export const getUrl = async (id: string, user_id: string) => {
+  const { data, error } = await supabase
+    .from("urls")
+    .select("*")
+    .eq("id", id)
+    .eq("user_id", user_id)
+    .maybeSingle();
+  if (error) {
+    console.error(error.message);
+    throw new Error("Error fetching URL");
+  }
+  if (!data) {
+    throw new Error("URL not found");
+  }
+  return data;
+};
