@@ -2,10 +2,13 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import AppLayout from "./layouts/app-layout"
 import LandingPage from "./pages/landing-page"
 import AuthPage from "./pages/auth"
-import DashboardPage from "./pages/dashboard"
 import LinkPage from "./pages/link"
 import RedirectLink from "./pages/redirect-link"
 import ProtectedRoute from "./components/protected-route"
+
+import { lazy, Suspense } from 'react';
+import DashboardSkeleton from "./skeletons/dashboard-skeleton"
+const DashboardPage = lazy(() => import("./pages/dashboard"))
 
 const router = createBrowserRouter([
   {
@@ -21,7 +24,9 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: (
           <ProtectedRoute>
-            <DashboardPage />
+            <Suspense fallback={<DashboardSkeleton />}>
+              <DashboardPage />
+            </Suspense>
           </ProtectedRoute>
         )
       }, {

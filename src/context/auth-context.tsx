@@ -1,13 +1,12 @@
-import { supabase } from "@/db/supabase";
+import { supabase, supabaseUrl } from "@/db/supabase";
 import type { Session, User } from "@supabase/supabase-js";
 import React, { createContext, useContext, useEffect, useState } from "react";
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
 type AuthContextType = {
     user: User | null,
     session: Session | null,
     loading: boolean,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     loginUser: (email: string, password: string) => Promise<void>,
     logoutUser: () => Promise<void>
     isAuthenticated: boolean
@@ -120,7 +119,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <AuthContext.Provider value={{
-            user, loading, session, logoutUser, loginUser, isAuthenticated, signupUser
+            user, loading, setLoading, session, logoutUser, loginUser, isAuthenticated, signupUser
         }}>
             {children}
         </AuthContext.Provider>

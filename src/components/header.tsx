@@ -16,7 +16,7 @@ import { toast } from "sonner";
 
 const Header = () => {
     const navigate = useNavigate();
-    const { user, logoutUser, loading } = useAuthContext();
+    const { user, logoutUser, loading, isAuthenticated } = useAuthContext();
 
     const getDisplayNameFromEmail = (email: string) => {
         const upperCaseEmail = email.charAt(0).toUpperCase() + email.slice(1).replace(/[0-9]/g, '');
@@ -37,7 +37,7 @@ const Header = () => {
     return (
         <header className="sticky top-0 border-b border-b-border/60 z-30 bg-background/20 backdrop-blur-2xl">
             <nav className="max-w-7xl mx-auto p-4 flex justify-between items-center">
-                <Link to={"/"}>
+                <Link to={isAuthenticated ? "/dashboard" : "/"}>
                     <h1 className="font-semibold text-2xl">URLShortner</h1>
                 </Link>
 
@@ -50,15 +50,18 @@ const Header = () => {
                     ) : (
                         <DropdownMenu>
                             <DropdownMenuTrigger>
-                                <Avatar>
+                                <Avatar className={"size-8"}>
                                     {user?.user_metadata?.profile_pic ? (
                                         <>
-                                            <AvatarImage src={user?.user_metadata?.profile_pic} />
+                                            <AvatarImage loading="lazy" src={`${user?.user_metadata?.profile_pic}?width=64&height=64&resize=cover`}
+                                                sizes="32px"
+                                            />
                                             <AvatarFallback>URL</AvatarFallback>
                                         </>
                                     ) : (
                                         <>
-                                            <AvatarImage src="https://github.com/shadcn.png" />
+                                            <AvatarImage loading="lazy" src="https://github.com/shadcn.png?s=64"
+                                                sizes="32px" />
                                             <AvatarFallback>CN</AvatarFallback>
                                         </>
                                     )}
@@ -74,9 +77,11 @@ const Header = () => {
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         onPointerDown={(e) => e.preventDefault()}
-                                        onSelect={(e) => {
-                                            e.preventDefault(); handleLogout()
-                                        }} variant="destructive" className={"p-1.5 rounded-sm cursor-pointer"}>
+                                        onSelect={(e) =>
+                                            e.preventDefault()
+                                        }
+                                        onClick={handleLogout}
+                                        variant="destructive" className={"p-1.5 rounded-sm cursor-pointer"}>
                                         {loading ? (
                                             <>
                                                 <Loader2 className="animate-spin" />

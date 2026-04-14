@@ -4,12 +4,15 @@ import App from './App.tsx'
 import { StrictMode } from 'react'
 import { AuthProvider } from './context/auth-context.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
+import { URLProvider } from './context/url-context.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <Toaster />
-      <App />
+      <URLProvider>
+        <Toaster />
+        <App />
+      </URLProvider>
     </AuthProvider>
   </StrictMode>
 )
