@@ -12,6 +12,8 @@ import { useRef } from "react";
 import { useCreateUrl } from "@/hooks/useCreateUrl";
 import { toast } from "sonner";
 
+const APP_URL = import.meta.env.VITE_APP_URL;
+
 const CreateUrlForm = ({ longLink }: { longLink?: string }) => {
     const { user } = useAuthContext();
     // const navigate = useNavigate();
@@ -145,8 +147,8 @@ const CreateUrlForm = ({ longLink }: { longLink?: string }) => {
                         Custom Url (optional)
                     </FieldLabel>
                     <div className="flex items-center gap-2">
-                        <Card className="p-2 rounded-sm pr-11">
-                            https://trimm.np
+                        <Card className="p-2 rounded-sm line-clamp-1 text-ellipsis">
+                            {APP_URL || "http://localhost:5173"}
                         </Card>
                         /
                         <Controller

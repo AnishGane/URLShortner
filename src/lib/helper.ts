@@ -42,3 +42,33 @@ export const storeClicks = ({
   // Instant redirect (no waiting)
   window.location.replace(original_url);
 };
+
+export const copyToClipboard = async (text: string): Promise<boolean> => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const downloadFile = (url: string, fileName?: string) => {
+  try {
+    const parsedUrl = new URL(url, window.location.origin);
+    if (!["http:", "https:", "blob:", "data:"].includes(parsedUrl.protocol)) {
+      console.error("Invalid URL protocol for download");
+      return;
+    }
+  } catch {
+    console.error("Invalid URL for download");
+    return;
+  }
+
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  if (fileName) anchor.download = fileName;
+
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+};

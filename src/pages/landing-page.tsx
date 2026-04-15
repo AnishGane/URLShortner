@@ -31,7 +31,6 @@ const items = [
 ]
 
 const LandingPage = () => {
-
     const [originalUrl, setOriginalUrl] = useState('')
     const navigate = useNavigate();
 

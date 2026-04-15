@@ -5,10 +5,8 @@ import AuthPage from "./pages/auth"
 import LinkPage from "./pages/link"
 import RedirectLink from "./pages/redirect-link"
 import ProtectedRoute from "./components/protected-route"
-
-import { lazy, Suspense } from 'react';
-import DashboardSkeleton from "./skeletons/dashboard-skeleton"
-const DashboardPage = lazy(() => import("./pages/dashboard"))
+import PublicRoute from "./components/public-route"
+import DashboardPage from "./pages/dashboard"
 
 const router = createBrowserRouter([
   {
@@ -16,17 +14,23 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <LandingPage />
+        element: (
+          <PublicRoute>
+            <LandingPage />
+          </PublicRoute>
+        )
       }, {
         path: "/auth",
-        element: <AuthPage />
+        element: (
+          <PublicRoute>
+            <AuthPage />
+          </PublicRoute>
+        )
       }, {
         path: "/dashboard",
         element: (
           <ProtectedRoute>
-            <Suspense fallback={<DashboardSkeleton />}>
-              <DashboardPage />
-            </Suspense>
+            <DashboardPage />
           </ProtectedRoute>
         )
       }, {

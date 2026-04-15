@@ -11,6 +11,8 @@ import { Button } from "./ui/button"
 import React, { useState } from "react"
 import { useDeleteUrl } from "@/hooks/useDeleteUrl"
 import { Link } from "react-router-dom"
+import { copyToClipboard, downloadFile } from "@/lib/helper"
+import { toast } from "sonner"
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
@@ -18,26 +20,20 @@ const LinkCard = ({ url }: { url: any }) => {
     const [isCopied, setIsCopied] = useState(false);
     const { mutate: deleteUrl, isPending: isDeleting } = useDeleteUrl();
 
-    const copyShortUrl = () => {
-        navigator.clipboard.writeText(`${APP_URL}${url.short_url}`);
-        setIsCopied(true);
-        setTimeout(() => {
-            setIsCopied(false);
-        }, 3000);
+    const copyShortUrl = async () => {
+        const success = await copyToClipboard(`${APP_URL}${url.short_url}`);
+        if (success) {
+            setIsCopied(true);
+            toast.success("Copied to clipboard");
+            setTimeout(() => setIsCopied(false), 3000);
+        }
     }
 
     const downloadImage = () => {
         const imageUrl = url?.qr;
         const fileName = url?.title;
 
-        const anchor = document.createElement("a");
-        anchor.href = imageUrl;
-        anchor.download = fileName;
-
-        document.body.appendChild(anchor);
-        anchor.click();
-
-        document.body.removeChild(anchor);
+        downloadFile(imageUrl, fileName);
     }
 
     return (
@@ -56,7 +52,7 @@ const LinkCard = ({ url }: { url: any }) => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuItem
-                                onSelect={(e) => e.preventDefault()} onClick={copyShortUrl}
+                                onClick={copyShortUrl}
                                 className={"cursor-pointer rounded-sm"}>
                                 {!isCopied ?
                                     (
@@ -80,7 +76,6 @@ const LinkCard = ({ url }: { url: any }) => {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                                onSelect={(e) => e.preventDefault()}
                                 onClick={() => deleteUrl(url.id)}
                                 variant="destructive" className={"cursor-pointer rounded-sm"}>
                                 {isDeleting ? (
