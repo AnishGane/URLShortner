@@ -1,22 +1,11 @@
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import LoginForm from "@/components/forms/login-form";
 import SignUpForm from "@/components/forms/signup-form";
-import { useAuthContext } from "@/context/auth-context";
-import { useEffect } from "react";
 
 const AuthPage = () => {
     const [searchParams] = useSearchParams();
     const longLink = searchParams.get("createNew");
-    const navigate = useNavigate();
-
-    const { isAuthenticated, loading } = useAuthContext();
-
-    useEffect(() => {
-        if (isAuthenticated && !loading) {
-            navigate(longLink ? `/dashboard?createNew=${longLink}` : '/dashboard');
-        }
-    }, [isAuthenticated, loading, navigate, longLink]);
 
     return (
         <div className='w-full min-h-screen flex flex-col justify-center items-center'>

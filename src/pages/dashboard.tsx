@@ -40,7 +40,7 @@ const DashboardPage = () => {
     const totalUrls = filteredUrls.length
 
     return (
-        <div className="py-12">
+        <div className="py-12 px-3">
             {/* Top Stats Card (Dynamic) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {loading ? (
@@ -87,19 +87,23 @@ const DashboardPage = () => {
                 </InputGroup>
             </div >
 
-            <div className="my-2 flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                    {debounceValue ?
-                        <p>Available:</p> :
-                        (
-                            <p>Total Links:</p>
-                        )}
-                    <span className="font-medium text-lg">
-                        {totalUrls}
-                    </span>
+            {urlsLoading ? (
+                <Skeleton className="animate-pulse h-12" />
+            ) : (
+                <div className="my-2 flex items-center gap-4">
+                    <div className="flex items-center gap-1">
+                        {debounceValue ?
+                            <p>Available:</p> :
+                            (
+                                <p>Total Links:</p>
+                            )}
+                        <span className="font-medium text-lg">
+                            {totalUrls}
+                        </span>
+                    </div>
+                    {isTyping && <p className="text-muted-foreground text-sm">Searching...</p>}
                 </div>
-                {isTyping && <p className="text-muted-foreground text-sm">Searching...</p>}
-            </div>
+            )}
 
             {/* Rendering the links */}
             {urlsLoading ? (

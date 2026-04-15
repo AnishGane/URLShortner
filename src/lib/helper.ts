@@ -66,6 +66,7 @@ export const downloadFile = (url: string, fileName?: string) => {
 
   const anchor = document.createElement("a");
   anchor.href = url;
+  anchor.target = "_blank";
   if (fileName) anchor.download = fileName;
 
   document.body.appendChild(anchor);

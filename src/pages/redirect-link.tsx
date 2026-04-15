@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { getLongUrl } from "@/db/urls.db";
 import { storeClicks } from "@/lib/helper";
 import { useQuery } from "@tanstack/react-query";
@@ -21,10 +22,20 @@ const RedirectLink = () => {
         }
     }, [data]);
 
-    if (isLoading) return <div>Redirecting...</div>;
+    if (isLoading) {
+        return (
+            <div className="py-8">
+                <Skeleton className="h-12 rounded-lg animate-pulse" />
+            </div>
+        )
+    }
     if (isError) return <div>Link not found</div>;
 
-    return <div>Redirecting...</div>
+    return (
+        <div className="py-8 text-center">
+            <h1>Redirecting to {data?.original_url}</h1>
+        </div>
+    )
 }
 
 export default RedirectLink

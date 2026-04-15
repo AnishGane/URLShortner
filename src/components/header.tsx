@@ -71,12 +71,7 @@ const Header = () => {
                                 <DropdownMenuGroup>
                                     <DropdownMenuLabel>{user?.user_metadata?.name || getDisplayNameFromEmail(user.email)}</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem className={"p-1.5 rounded-sm cursor-pointer"}>
-                                        <LinkIcon />
-                                        My Links
-                                    </DropdownMenuItem>
                                     <DropdownMenuItem
-                                        onPointerDown={(e) => e.preventDefault()}
                                         onSelect={(e) =>
                                             e.preventDefault()
                                         }

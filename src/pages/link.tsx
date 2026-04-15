@@ -1,21 +1,27 @@
-import LocationStatsChart from "@/components/location-stats-chart";
-import DevicePieChart from "@/components/pie-chart";
+import LocationStatsChart from "@/components/charts/location-stats-chart";
+import DevicePieChart from "@/components/charts/pie-chart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useAuthContext } from "@/context/auth-context";
 import { getClicksForaURL } from "@/db/clicks.db";
 import { getUrl } from "@/db/urls.db";
+import { useDeleteUrl } from "@/hooks/useDeleteUrl";
+import { copyToClipboard, downloadFile } from "@/lib/helper";
 import { LinkSkeleton } from "@/skeletons/link-page-skeleton";
 import { useQuery } from "@tanstack/react-query";
-import { Copy, Download, Link, Loader2, Trash2 } from "lucide-react";
-import { useParams } from "react-router-dom"
+import { ArrowLeft, Check, Copy, Download, Link, Loader2, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Navigate, useParams } from "react-router-dom"
+import { toast } from "sonner";
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
 const LinkPage = () => {
   const { id } = useParams();
   const { user } = useAuthContext();
+  const [isCopied, setIsCopied] = useState(false);
+  const { mutate: deleteUrl, isPending, isSuccess } = useDeleteUrl();
 
   const { isLoading, data: url, isError } = useQuery({
     queryKey: ["linkurl", id, user?.id],
@@ -34,102 +40,136 @@ const LinkPage = () => {
     link = url?.custom_url ? url?.custom_url : url?.short_url
   }
 
-  // delete Url logic and copy, download all here
+  const copyShortUrl = async () => {
+    const success = await copyToClipboard(`${APP_URL}${url?.short_url}`);
+    if (success) {
+      setIsCopied(true);
+      toast.success("Copied to clipboard");
+      setTimeout(() => setIsCopied(false), 3000);
+    }
+  }
 
+  const downloadImage = () => {
+    if (!url?.qr) return;
+    const imageUrl = url?.qr;
+    const fileName = url?.title;
+
+    downloadFile(imageUrl, fileName);
+  }
   if (isLoading || clicksLoading) return <LinkSkeleton />
 
   if (isError || clicksError) return <div className="min-h-screen flex justify-center items-center text-2xl">Oops! Something went wrong. Try Again later.</div>
 
+  if (isSuccess) {
+    return <Navigate to="/dashboard" replace />
+  }
+
   return (
-    <section className="flex flex-col py-12 sm:flex-row gap-6 justify-between px-4 sm:px-0">
-      <Card className="flex flex-col items-start gap-4 rounded-lg sm:w-2/5 h-fit">
-        <CardHeader className="w-full px-4 flex justify-between items-center">
-          <CardTitle className="text-xl md:text-2xl w-fit">
-            {url?.title}
-          </CardTitle>
-          <CardDescription className="text-xs">
-            Created at: {new Date(url?.created_at).toLocaleString()}
-          </CardDescription>
-        </CardHeader>
-        <Separator />
-        <div className="flex flex-col gap-4 p-4">
-          <div className="flex flex-col">
-            <h2 className="text-lg font-medium">Short Link</h2>
-            <div className="flex items-center gap-2">
-              <Link className="size-3.5" />
-              <a className="text-blue-400 hover:underline" href={`${APP_URL}${link}`} target="_blank">
-                {APP_URL}{link}
-              </a>
-            </div>
-          </div>
-          <div className="flex flex-col gap-1 my-1">
-            <h2 className="text-lg font-medium">Original Link</h2>
-            <div className="flex items-center gap-2">
-              <Link className="size-3.5" />
-              <a href={`${url?.original_url}`} target="_blank">
-                {url?.original_url}
-              </a>
-            </div>
-          </div>
-
-          <div >
-            <h2 className="text-lg font-medium">QR Code</h2>
-            <div className="border-4 border-foreground mt-1 w-fit">
-              <img src={`${url?.qr}?s=32`} alt="qr code" loading="lazy" />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 mt-4">
-            <h2 className="text-base">You can also</h2>
-            <div className="flex items-center gap-2">
-              <Button title="Copy short url" className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
-                <Copy />
-                <span className="sr-only">Copy short url</span>
-              </Button>
-              <Button title="Delete link" variant="destructive" className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
-                <Trash2 />
-                <span className="sr-only">Delete link</span>
-              </Button>
-              <Button title="Download qr code" variant="outline" className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
-                <Download />
-                <span className="sr-only">Download qr code</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Card>
-      {/* Analytics */}
-      <Card className="flex-1 rounded-lg">
-        {clicksStats && clicksStats?.length > 0 ? (
-          <CardContent className="space-y-4">
-            <Card className="rounded-lg">
-              <CardHeader>
-                <CardTitle>
-                  Total Clicks
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>{clicksStats?.length}</p>
-              </CardContent>
-            </Card>
-            <LocationStatsChart stats={clicksStats} />
-            <DevicePieChart stats={clicksStats} />
-          </CardContent>
-        ) : (
-          <CardContent>
-            {clicksLoading ? (
-              <>
-                <Loader2 className="animate-spin" />
-                <p>Loading Analytics</p>
-              </>
-            ) : (
-              <div className="text-muted-foreground h-80 flex items-center justify-center">
-                <p>No Analytics Found</p>
+    <section className="py-6 sm:py-8 px-3">
+      <Button onClick={() => window.history.back()} variant="outline" className={"cursor-pointer"}>
+        <ArrowLeft />
+      </Button>
+      <div className="flex flex-col mt-6 sm:flex-row gap-6 justify-between">
+        <Card className="flex flex-col items-start gap-4 rounded-lg sm:w-2/5 h-fit">
+          <CardHeader className="w-full px-4 flex justify-between items-center">
+            <CardTitle className="text-xl md:text-2xl w-fit">
+              {url?.title}
+            </CardTitle>
+            <CardDescription className="text-xs">
+              Created at: {url?.created_at ? new Date(url.created_at).toLocaleString() : "Unknown"}
+            </CardDescription>
+          </CardHeader>
+          <Separator />
+          <div className="flex flex-col gap-4 p-4">
+            <div className="flex flex-col">
+              <h2 className="text-lg font-medium">
+                {url?.custom_url ? "Custom Short Link" : "Short Link"}
+              </h2>
+              <div className="flex items-center gap-2">
+                <Link className="size-3.5" />
+                <a className="text-blue-400 hover:underline" href={`${APP_URL}${link}`} target="_blank">
+                  {APP_URL}{link}
+                </a>
               </div>
-            )}
-          </CardContent>
-        )}
-      </Card>
+            </div>
+            <div className="flex flex-col gap-1 my-1">
+              <h2 className="text-lg font-medium">Original Link</h2>
+              <div className="flex items-center gap-2">
+                <Link className="size-3.5" />
+                <a href={`${url?.original_url}`} target="_blank">
+                  {url?.original_url}
+                </a>
+              </div>
+            </div>
+
+            <div >
+              <h2 className="text-lg font-medium">QR Code</h2>
+              <div className="border-4 border-foreground mt-1 w-fit">
+                <img src={`${url?.qr}?s=32`} alt="qr code" loading="lazy" />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 mt-4">
+              <h2 className="text-base">You can also</h2>
+              <div className="flex items-center gap-2">
+                <Button title="Copy short url"
+                  onClick={copyShortUrl}
+                  className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
+                  {isCopied ? <Check /> : <Copy />}
+                  <span className="sr-only">Copy short url</span>
+                </Button>
+                <Button disabled={isPending} title="Delete link" variant="destructive"
+                  onClick={() => deleteUrl(url?.id)}
+                  className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
+                  {isPending ?
+                    <Loader2 className="animate-spin size-5" /> :
+                    <Trash2 />
+                  }
+                  <span className="sr-only">Delete link</span>
+                </Button>
+                <Button title="Download qr code" variant="outline"
+                  onClick={downloadImage}
+                  className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
+                  <Download />
+                  <span className="sr-only">Download qr code</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Card>
+        {/* Analytics */}
+        <Card className="flex-1 rounded-lg">
+          {clicksStats && clicksStats?.length > 0 ? (
+            <CardContent className="space-y-4">
+              <Card className="rounded-lg">
+                <CardHeader>
+                  <CardTitle>
+                    Total Clicks
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>{clicksStats?.length}</p>
+                </CardContent>
+              </Card>
+              <LocationStatsChart stats={clicksStats} />
+              <DevicePieChart stats={clicksStats} />
+            </CardContent>
+          ) : (
+            <CardContent>
+              {clicksLoading ? (
+                <>
+                  <Loader2 className="animate-spin" />
+                  <p>Loading Analytics</p>
+                </>
+              ) : (
+                <div className="text-muted-foreground h-80 flex items-center justify-center">
+                  <p>No Analytics Found</p>
+                </div>
+              )}
+            </CardContent>
+          )}
+        </Card>
+      </div>
     </section>
   )
 }

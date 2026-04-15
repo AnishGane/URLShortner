@@ -2,7 +2,6 @@ import { createUrlSchema, type createUrlSchemaType } from "@/schema/form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { useAuthContext } from "@/context/auth-context"
-// import { useNavigate } from "react-router-dom";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Card } from "../ui/card";
@@ -16,7 +15,6 @@ const APP_URL = import.meta.env.VITE_APP_URL;
 
 const CreateUrlForm = ({ longLink }: { longLink?: string }) => {
     const { user } = useAuthContext();
-    // const navigate = useNavigate();
     const ref = useRef<any>(null);
 
     const form = useForm<createUrlSchemaType>({
@@ -66,9 +64,6 @@ const CreateUrlForm = ({ longLink }: { longLink?: string }) => {
                 qrcode: blob
             }, {
                 onSuccess: () => {
-                    // optional: redirect to link page
-                    // navigate(`/link/${res.id}`);
-
                     toast.success("Link created successfully");
 
                     // reset form

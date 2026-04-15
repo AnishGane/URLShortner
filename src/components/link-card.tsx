@@ -40,7 +40,10 @@ const LinkCard = ({ url }: { url: any }) => {
         <Card className="px-4 py-4.5 rounded-lg">
             <CardHeader>
                 <CardTitle className="text-xl flex items-center justify-between">
-                    <Link to={`/link/${url.id}`}>
+                    <Link to={`/link/${url.id}`} onClick={() => window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    })}>
                         <span className="hover:underline">{url.title}</span>
                     </Link>
 
