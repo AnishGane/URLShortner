@@ -1,5 +1,6 @@
 import CreateLinkDialog from "@/components/create-link-dialog";
 import LinkCard from "@/components/link-card";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,7 +10,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useRealtimeClicks } from "@/hooks/useRealtimeClicks";
 import { useRealtimeUrls } from "@/hooks/useRealtimeUrls";
 import { useUrls } from "@/hooks/useUrls";
-import { Link, Pointer, SearchIcon } from "lucide-react";
+import { Link, MouseLeftIcon, SearchIcon, X } from "lucide-react";
 import { useState, useMemo } from "react"
 
 const DashboardPage = () => {
@@ -61,7 +62,7 @@ const DashboardPage = () => {
                         <Card className="flex flex-row">
                             <CardHeader className=" flex-1 rounded-none">
                                 <CardTitle className="font-normal">Total Clicks
-                                    <Pointer className="text-muted-foreground/20 size-7 mt-1" />
+                                    <MouseLeftIcon className="text-muted-foreground/20 size-7 mt-1" />
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="text-xl md:text-5xl font-medium flex items-center justify-center">
@@ -90,18 +91,28 @@ const DashboardPage = () => {
             {urlsLoading ? (
                 <Skeleton className="animate-pulse h-12" />
             ) : (
-                <div className="my-2 flex items-center gap-4">
-                    <div className="flex items-center gap-1">
-                        {debounceValue ?
-                            <p>Available:</p> :
-                            (
-                                <p>Total Links:</p>
-                            )}
-                        <span className="font-medium text-lg">
-                            {totalUrls}
-                        </span>
+                <div className="my-2 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                            {debounceValue ?
+                                <p>Available:</p> :
+                                (
+                                    <p>Total Links:</p>
+                                )}
+                            <span className="font-medium text-lg">
+                                {totalUrls}
+                            </span>
+                        </div>
+                        {isTyping && <p className="text-muted-foreground text-sm">Searching...</p>}
                     </div>
-                    {isTyping && <p className="text-muted-foreground text-sm">Searching...</p>}
+                    {debounceValue &&
+                        <Badge className="py-2.5">
+                            <span className="text-[10px] tracking-wide">
+                                {debounceValue}
+                            </span>
+                            <X />
+                        </Badge>
+                    }
                 </div>
             )}
 
@@ -120,7 +131,7 @@ const DashboardPage = () => {
                 </div>
             ) : (
                 <div className="min-h-80 flex items-center justify-center">
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-muted-foreground text-sm text-center">
                         No links created. Create one by tapping on the
                         <span className="text-primary px-1">Create Link</span>
                         button.

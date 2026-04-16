@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
-const CreateUrlForm = ({ longLink }: { longLink?: string }) => {
+const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: any }) => {
     const { user } = useAuthContext();
     const ref = useRef<any>(null);
 
@@ -65,6 +65,7 @@ const CreateUrlForm = ({ longLink }: { longLink?: string }) => {
             }, {
                 onSuccess: () => {
                     toast.success("Link created successfully");
+                    setOpen(false);
 
                     // reset form
                     form.reset();

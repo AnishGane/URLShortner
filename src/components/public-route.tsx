@@ -6,7 +6,7 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
     const { isAuthenticated, loading } = useAuthContext();
     const location = useLocation();
 
-    if (loading) return <Loader2 className="animate-spin size-6" />;
+    if (loading) return <Loader2 className="animate-spin w-full pt-4 size-6" />;
 
     if (isAuthenticated) {
         const params = location.search;

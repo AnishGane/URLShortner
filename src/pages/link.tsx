@@ -14,6 +14,16 @@ import { ArrowLeft, Check, Copy, Download, Link, Loader2, Trash2 } from "lucide-
 import { useState } from "react";
 import { Navigate, useParams } from "react-router-dom"
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
@@ -56,6 +66,7 @@ const LinkPage = () => {
 
     downloadFile(imageUrl, fileName);
   }
+
   if (isLoading || clicksLoading) return <LinkSkeleton />
 
   if (isError || clicksError) return <div className="min-h-screen flex justify-center items-center text-2xl">Oops! Something went wrong. Try Again later.</div>
@@ -118,15 +129,33 @@ const LinkPage = () => {
                   {isCopied ? <Check /> : <Copy />}
                   <span className="sr-only">Copy short url</span>
                 </Button>
-                <Button disabled={isPending} title="Delete link" variant="destructive"
-                  onClick={() => deleteUrl(url?.id)}
-                  className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
-                  {isPending ?
-                    <Loader2 className="animate-spin size-5" /> :
-                    <Trash2 />
-                  }
-                  <span className="sr-only">Delete link</span>
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <Button disabled={isPending} title="Delete link" variant="destructive"
+                      className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
+                      {isPending ?
+                        <Loader2 className="animate-spin size-5" /> :
+                        <Trash2 />
+                      }
+                      <span className="sr-only">Delete link</span>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure about it?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete your link from our server.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="flex items-center justify-between gap-2">
+                      <AlertDialogCancel className={"flex-1 rounded-sm py-4.5 cursor-pointer"}>Cancel</AlertDialogCancel>
+                      <AlertDialogAction className={"flex-1 rounded-sm py-4.5 cursor-pointer"} onClick={() => deleteUrl(url?.id)}>
+                        {isPending ? "Deleting..." : "Continue"}
+                      </AlertDialogAction>
+                    </div>
+                  </AlertDialogContent>
+                </AlertDialog>
+
                 <Button title="Download qr code" variant="outline"
                   onClick={downloadImage}
                   className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
@@ -157,10 +186,10 @@ const LinkPage = () => {
           ) : (
             <CardContent>
               {clicksLoading ? (
-                <>
-                  <Loader2 className="animate-spin" />
+                <div className="flex items-center justify-center h-60">
+                  <Loader2 className="animate-spin mr-2" />
                   <p>Loading Analytics</p>
-                </>
+                </div>
               ) : (
                 <div className="text-muted-foreground h-80 flex items-center justify-center">
                   <p>No Analytics Found</p>

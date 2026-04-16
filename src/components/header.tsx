@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { LinkIcon, Loader2, LogOut } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
 import { useAuthContext } from "@/context/auth-context";
 import { toast } from "sonner";
 
