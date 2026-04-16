@@ -17,6 +17,7 @@ import { toast } from "sonner";
 const Header = () => {
     const navigate = useNavigate();
     const { user, logoutUser, loading, isAuthenticated } = useAuthContext();
+    const email = user?.email;
 
     const getDisplayNameFromEmail = (email: string) => {
         const upperCaseEmail = email.charAt(0).toUpperCase() + email.slice(1).replace(/[0-9]/g, '');
@@ -69,7 +70,7 @@ const Header = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className={"mt-1"}>
                                 <DropdownMenuGroup>
-                                    <DropdownMenuLabel>{user?.user_metadata?.name || getDisplayNameFromEmail(user.email)}</DropdownMenuLabel>
+                                    <DropdownMenuLabel>{user?.user_metadata?.name || (email ? getDisplayNameFromEmail(email) : "User")}</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                         onSelect={(e) =>
