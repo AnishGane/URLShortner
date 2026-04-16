@@ -33,10 +33,19 @@ const LinkPage = () => {
   const [isCopied, setIsCopied] = useState(false);
   const { mutate: deleteUrl, isPending, isSuccess } = useDeleteUrl();
 
+  if (!id) {
+    return <div>Invalid Id</div>
+  }
+
   const { isLoading, data: url, isError } = useQuery({
     queryKey: ["linkurl", id, user?.id],
-    queryFn: () => getUrl(id, user?.id || ""),
-    enabled: !!id && !!user
+    queryFn: () => {
+      if (!user?.id) {
+        throw new Error("Missing user");
+      }
+      return getUrl(id, user.id);
+    },
+    enabled: !!id && !!user?.id,
   })
 
   const { isLoading: clicksLoading, data: clicksStats, isError: clicksError } = useQuery({

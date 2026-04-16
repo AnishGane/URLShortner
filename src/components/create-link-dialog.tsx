@@ -35,7 +35,7 @@ const CreateLinkDialog = () => {
                         Create a new link by filling up the form.
                     </DialogDescription>
 
-                    <CreateUrlForm setOpen={setOpen} longLink={longLink} />
+                    <CreateUrlForm setOpen={setOpen} longLink={longLink ?? undefined} />
                 </DialogHeader>
             </DialogContent>
         </Dialog >

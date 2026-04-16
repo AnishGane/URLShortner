@@ -18,7 +18,7 @@ const DashboardPage = () => {
     const { user } = useAuthContext();
     const userId = user?.id;
 
-    const { data: urls = [], isLoading: urlsLoading } = useUrls(userId);
+    const { data: urls = [], isLoading: urlsLoading } = useUrls(userId!);
     const urlIds = useMemo(() => urls.map((u: any) => u.id), [urls]);
     const { data: clicks = [], isLoading: clicksLoading } = useClicks(urlIds);
 

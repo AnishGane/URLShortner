@@ -7,6 +7,10 @@ import { useParams } from "react-router-dom"
 
 const RedirectLink = () => {
     const { id } = useParams();
+    if(!id){
+        return <div>Invalid Id</div>
+    }
+    
     const { data, isLoading, isError } = useQuery({
         queryKey: ["link", id],
         queryFn: () => getLongUrl(id),
