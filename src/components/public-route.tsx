@@ -1,12 +1,9 @@
 import { useAuthContext } from "@/context/auth-context"
-import { Loader2 } from "lucide-react";
 import { Navigate, useLocation } from "react-router-dom";
 
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-    const { isAuthenticated, loading } = useAuthContext();
+    const { isAuthenticated } = useAuthContext();
     const location = useLocation();
-
-    if (loading) return <Loader2 className="animate-spin w-full pt-4 size-6" />;
 
     if (isAuthenticated) {
         const params = location.search;
