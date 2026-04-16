@@ -43,9 +43,7 @@ const router = createBrowserRouter([
       }, {
         path: "/:id",
         element: (
-          <ProtectedRoute>
-            <RedirectLink />
-          </ProtectedRoute>
+          <RedirectLink />
         )
       }
     ]

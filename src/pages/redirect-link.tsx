@@ -7,10 +7,8 @@ import { useParams } from "react-router-dom"
 
 const RedirectLink = () => {
     const { id } = useParams();
-    if(!id){
-        return <div>Invalid Id</div>
-    }
-    
+    if (!id) return <div>Invalid link</div>;
+
     const { data, isLoading, isError } = useQuery({
         queryKey: ["link", id],
         queryFn: () => getLongUrl(id),
@@ -18,12 +16,13 @@ const RedirectLink = () => {
     });
 
     useEffect(() => {
-        if (data) {
-            storeClicks({
-                id: data.id,
-                original_url: data.original_url
-            });
-        }
+        if (!data) return;
+
+        storeClicks({
+            id: data.id,
+        });
+
+        window.location.replace(data.original_url);
     }, [data]);
 
     if (isLoading) {

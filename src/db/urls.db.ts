@@ -34,7 +34,7 @@ export const getUrl = async (id: string, user_id: string) => {
     .from("urls")
     .select("*")
     .eq("id", id)
-    .eq("user_id", user_id)
+    // .eq("user_id", user_id)
     .maybeSingle();
   if (error) {
     console.error(error.message);
