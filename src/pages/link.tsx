@@ -43,7 +43,7 @@ const LinkPage = () => {
       if (!user?.id) {
         throw new Error("Missing user");
       }
-      return getUrl(id, user.id);
+      return getUrl(id);
     },
     enabled: !!id && !!user?.id,
   })

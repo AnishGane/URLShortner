@@ -29,7 +29,7 @@ export const getLongUrl = async (id: string) => {
   return data;
 };
 
-export const getUrl = async (id: string, user_id: string) => {
+export const getUrl = async (id: string) => {
   const { data, error } = await supabase
     .from("urls")
     .select("*")
