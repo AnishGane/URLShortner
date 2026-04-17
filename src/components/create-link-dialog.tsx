@@ -26,7 +26,8 @@ const CreateLinkDialog = () => {
             <DialogTrigger>
                 <Button className={"p-4.5 cursor-pointer rounded-md"}>
                     <Plus />
-                    Create Link</Button>
+                    Create Link
+                </Button>
             </DialogTrigger>
             <DialogContent className={"rounded-md sm:max-w-md py-5"}>
                 <DialogHeader>

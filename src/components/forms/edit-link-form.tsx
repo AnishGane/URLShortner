@@ -1,71 +1,78 @@
-import { createUrlSchema, type createUrlSchemaType } from "@/schema/form-schema"
+import { editUrlSchema, type editUrlSchemaType } from "@/schema/form-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
+import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field"
+import { Input } from "../ui/input"
+import { Card } from "../ui/card"
+import { Button } from "../ui/button"
+import { toast } from "sonner"
 import { useAuthContext } from "@/context/auth-context"
-import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
-import { Card } from "../ui/card";
-import { Button } from "../ui/button";
-import { useCreateUrl } from "@/hooks/useCreateUrl";
-import { toast } from "sonner";
+import { useEditUrl } from "@/hooks/useEditUrl"
+import { useEffect } from "react"
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
-const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: any }) => {
+export const EditLinkForm = ({ url, setOpen }) => {
     const { user } = useAuthContext();
+    const { mutate: editUrl, isPending } = useEditUrl();
 
-    const form = useForm<createUrlSchemaType>({
-        resolver: zodResolver(createUrlSchema),
+    const form = useForm<editUrlSchemaType>({
+        resolver: zodResolver(editUrlSchema),
         defaultValues: {
             title: "",
-            original_url: longLink ? longLink : "",
+            original_url: "",
             custom_url: ""
         }
-    })
+    });
 
-    const { mutate: createUrl, isPending } = useCreateUrl();
+    useEffect(() => {
+        if (!url) return;
+        // Only reset if form is untouched
+        if (!form.formState.isDirty) {
+            form.reset({
+                title: url.title ?? "",
+                original_url: url.original_url ?? "",
+                custom_url: url.custom_url ?? ""
+            });
+        }
+    }, [url?.id]);
 
-    async function onSubmit(data: createUrlSchemaType) {
+    const onSubmit = async (data: editUrlSchemaType) => {
         try {
             if (!user?.id) {
                 toast.error("You must be logged in to create a link");
                 return;
             }
 
-            // urls (table) contains the isUnique constraint so needed to normalize it before creating link to solve the duplicate key error
-            const normalizedCustomUrl = data.custom_url?.trim()
-                ? data.custom_url?.trim()
-                : null;
+            const normalizedCustomUrl = data.custom_url?.trim() ? data.custom_url?.trim() : null;
 
-            createUrl({
-                ...data,
+            editUrl({
+                title: data.title,
+                original_url: data.original_url,
                 custom_url: normalizedCustomUrl,
-                userId: user?.id,
+                id: url.id,
+                user_id: user.id
             }, {
                 onSuccess: () => {
-                    toast.success("Link created successfully");
                     setOpen(false);
-                    form.reset();
-                },
-                onError: (error) => {
-                    toast.error(error instanceof Error ? error.message : "Failed to create link");
                 }
             })
+
         } catch (error) {
             const message = error instanceof Error ? error.message : "An unexpected error occurred";
-            console.error("Error in creating url:", message);
+            console.error("Error in editing url:", message);
             toast.error(message);
         }
     }
 
-    const previewSlug = form.watch("custom_url") || "";
+    const previewSlug = form.watch("custom_url") || url.short_url;
 
     return (
         <div className="mt-4">
             <div className="mb-4 text-sm text-muted-foreground text-center">
-                {APP_URL || "http://localhost:5173"}{previewSlug}
+                {APP_URL}{previewSlug}
             </div>
-            <form id="form-rhf-createurl" onSubmit={form.handleSubmit(onSubmit)}>
+            <form id="form-rhf-editurl" onSubmit={form.handleSubmit(onSubmit)}>
                 <FieldGroup>
                     <Controller
                         name="title"
@@ -74,16 +81,21 @@ const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: any 
                             <Field data-invalid={fieldState.invalid}>
                                 <FieldLabel
                                     className="font-semibold"
-                                    htmlFor="form-rhf-createurl-title">
+                                    htmlFor="form-rhf-editurl-title">
                                     Short URL Title
                                 </FieldLabel>
                                 <Input
                                     {...field}
-                                    id="form-rhf-createurl-title"
+                                    id="form-rhf-editurl-title"
                                     aria-invalid={fieldState.invalid}
                                     placeholder="My short url title"
                                     autoComplete="off"
                                     className="py-4.5"
+                                    onChange={(e) => field.onChange(e.target.value)}
+                                    onBlur={(e) => {
+                                        field.onChange(e.target.value.trim());
+                                        field.onBlur();
+                                    }}
                                 />
                                 {fieldState.invalid && (
                                     <FieldError errors={[fieldState.error]} />
@@ -98,17 +110,22 @@ const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: any 
                             <Field data-invalid={fieldState.invalid}>
                                 <FieldLabel
                                     className="font-semibold"
-                                    htmlFor="form-rhf-createurl-original-url">
+                                    htmlFor="form-rhf-editurl-original-url">
                                     Original URL
                                 </FieldLabel>
                                 <Input
                                     {...field}
-                                    id="form-rhf-createurl-original-url"
+                                    id="form-rhf-editurl-original-url"
                                     aria-invalid={fieldState.invalid}
                                     placeholder="https://www.google.com"
                                     type="url"
                                     autoComplete="off"
                                     className="py-4.5"
+                                    onChange={(e) => field.onChange(e.target.value)}
+                                    onBlur={(e) => {
+                                        field.onChange(e.target.value.trim());
+                                        field.onBlur();
+                                    }}
                                 />
                                 {fieldState.invalid && (
                                     <FieldError errors={[fieldState.error]} />
@@ -118,7 +135,7 @@ const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: any 
                     />
                     <FieldLabel
                         className="font-semibold -mb-3.5"
-                        htmlFor="form-rhf-createurl-custom_url">
+                        htmlFor="form-rhf-editurl-custom_url">
                         Custom Url (optional)
                     </FieldLabel>
                     <div className="flex items-center gap-2">
@@ -133,11 +150,16 @@ const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: any 
                                 <Field data-invalid={fieldState.invalid} >
                                     <Input
                                         {...field}
-                                        id="form-rhf-createurl-custom_url"
+                                        id="form-rhf-editurl-custom_url"
                                         aria-invalid={fieldState.invalid}
                                         placeholder="custom url"
                                         autoComplete="off"
                                         className="py-4.5"
+                                        onChange={(e) => field.onChange(e.target.value)}
+                                        onBlur={(e) => {
+                                            field.onChange(e.target.value.trim());
+                                            field.onBlur();
+                                        }}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
@@ -150,12 +172,10 @@ const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: any 
                         disabled={isPending}
                         type="submit"
                         className={"py-5 cursor-pointer mt-4"}>
-                        {isPending ? "Creating..." : "Create"}
+                        {isPending ? "Saving..." : "Save Changes"}
                     </Button>
                 </FieldGroup>
             </form>
         </div>
     )
 }
-
-export default CreateUrlForm

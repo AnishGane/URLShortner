@@ -41,6 +41,16 @@ export const createUrlSchema = z.object({
   custom_url: z.string().trim().toLowerCase().optional(),
 });
 
+export const editUrlSchema = z.object({
+  title: z
+    .string()
+    .min(3, { message: "Title must be at least 3 characters" })
+    .max(32, { message: "Title must be at most 32 characters" }),
+  original_url: z.string().url({ message: "Invalid URL" }),
+  custom_url: z.string().trim().toLowerCase().optional(),
+});
+
 export type signUpFormSchemaType = z.infer<typeof signUpFormSchema>;
 export type loginFormSchemaType = z.infer<typeof loginFormSchema>;
 export type createUrlSchemaType = z.infer<typeof createUrlSchema>;
+export type editUrlSchemaType = z.infer<typeof editUrlSchema>;

@@ -1,39 +1,32 @@
 import { supabase, supabaseUrl } from "@/db/supabase";
+import { generateQrFromText } from "@/lib/helper";
 import { useMutation } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
 
+const APP_URL = import.meta.env.VITE_APP_URL;
+
+if (!APP_URL) {
+  throw new Error("VITE_APP_URL environment variable is not configured");
+}
 export const useCreateUrl = () => {
   return useMutation({
-    mutationFn: async ({
-      title,
-      original_url,
-      custom_url,
-      userId,
-      qrcode,
-    }: any) => {
+    mutationFn: async ({ title, original_url, custom_url, userId }: any) => {
       const shortUrl = nanoid(8);
-      const fileName = `qr-${shortUrl}-${Date.now()}.png`;
 
-      const { error: storageError } = await supabase.storage
-        .from("qr")
-        .upload(fileName, qrcode);
-
-      if (storageError) throw new Error(storageError.message);
-
-      const qr = `${supabaseUrl}/storage/v1/object/public/qr/${fileName}`;
-
+      // checking the custom url uniqueness
       if (custom_url) {
-        const { data: existingCustomUrl } = await supabase
+        const { data: existing } = await supabase
           .from("urls")
-          .select("custom_url")
+          .select("id")
           .eq("custom_url", custom_url)
           .maybeSingle();
 
-        if (existingCustomUrl) {
+        if (existing) {
           throw new Error("Custom URL already exists");
         }
       }
 
+      // 1. insert first without qr in db
       const { data, error } = await supabase
         .from("urls")
         .insert([
@@ -42,20 +35,44 @@ export const useCreateUrl = () => {
             original_url,
             short_url: shortUrl,
             custom_url,
-            qr,
             user_id: userId,
-            qr_path: fileName,
           },
         ])
-        .select();
-      console.log("data", data);
+        .select()
+        .single();
 
-      if (error) {
-        console.error(error.message);
-        throw new Error(error.message);
-      }
+      if (error) throw new Error(error.message);
 
-      return data[0];
+      // 2. resolve slug
+      const slug = data.custom_url || data.short_url;
+      const shortLink = `${APP_URL}/${slug}`;
+
+      // 3. generate QR from short link(with slug)
+      const qrBlob = await generateQrFromText(shortLink);
+
+      const fileName = `qr-${shortUrl}-${Date.now()}.png`;
+
+      // 4. upload QR
+      const { error: storageError } = await supabase.storage
+        .from("qr")
+        .upload(fileName, qrBlob);
+
+      if (storageError) throw new Error(storageError.message);
+
+      const qr = `${supabaseUrl}/storage/v1/object/public/qr/${fileName}`;
+
+      // 5. update row with QR
+      const { error: updateError } = await supabase
+        .from("urls")
+        .update({
+          qr,
+          qr_path: fileName,
+        })
+        .eq("id", data.id);
+
+      if (updateError) throw new Error(updateError.message);
+
+      return { ...data, qr };
     },
   });
 };

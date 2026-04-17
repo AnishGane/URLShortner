@@ -1,6 +1,6 @@
 import CreateLinkDialog from "@/components/create-link-dialog";
 import LinkCard from "@/components/link-card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -83,7 +83,20 @@ const DashboardPage = () => {
                 <InputGroup className=" py-4.5 bg-background">
                     <InputGroupInput id="inline-end-input" type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search your links" className="" />
                     <InputGroupAddon align="inline-end" className="mr-1">
-                        <SearchIcon />
+                        {debounceValue ? (
+                            <Button
+                                variant="secondary"
+                                type="button"
+                                onClick={() => setSearchQuery("")}
+                                aria-label="Clear search"
+                                className="flex items-center gap-1 rounded-sm bg-muted-foreground/20 px-2 hover:bg-muted-foreground/30 transition-all duration-200 text-foreground/80 cursor-pointer"
+                            >
+                                <span className="font-normal">Clear</span>
+                                <X className="size-4" />
+                            </Button>
+                        ) : (
+                            <SearchIcon />
+                        )}
                     </InputGroupAddon>
                 </InputGroup>
             </div >
@@ -105,14 +118,6 @@ const DashboardPage = () => {
                         </div>
                         {isTyping && <p className="text-muted-foreground text-sm">Searching...</p>}
                     </div>
-                    {debounceValue &&
-                        <Badge className="py-2.5">
-                            <span className="text-[10px] tracking-wide">
-                                {debounceValue}
-                            </span>
-                            <X />
-                        </Badge>
-                    }
                 </div>
             )}
 

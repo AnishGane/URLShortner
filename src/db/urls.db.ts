@@ -45,3 +45,33 @@ export const getUrl = async (id: string) => {
   }
   return data;
 };
+
+export const updateUrl = async ({
+  id,
+  title,
+  original_url,
+  custom_url,
+  user_id,
+}: {
+  id: string;
+  title: string;
+  original_url: string;
+  custom_url?: string | null;
+  user_id: string;
+}) => {
+  const { data, error } = await supabase
+    .from("urls")
+    .update({
+      title,
+      original_url,
+      custom_url: custom_url ?? null,
+    })
+    .eq("id", id)
+    .eq("user_id", user_id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+};
