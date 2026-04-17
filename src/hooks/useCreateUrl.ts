@@ -50,7 +50,11 @@ export const useCreateUrl = () => {
       // 3. generate QR from short link(with slug)
       const qrBlob = await generateQrFromText(shortLink);
 
-      const fileName = `qr-${shortUrl}-${Date.now()}.png`;
+      if (!userId || typeof userId !== "string") {
+        throw new Error("userId is required");
+      }
+
+      const fileName = `${userId}/qr-${shortUrl}-${Date.now()}.png`;
 
       // 4. upload QR
       const { error: storageError } = await supabase.storage

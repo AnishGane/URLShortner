@@ -60,7 +60,7 @@ const LinkPage = () => {
   }
 
   const copyShortUrl = async () => {
-    const success = await copyToClipboard(`${APP_URL}${url?.short_url}`);
+    const success = await copyToClipboard(`${APP_URL}${link}`);
     if (success) {
       setIsCopied(true);
       toast.success("Copied to clipboard");
@@ -160,7 +160,7 @@ const LinkPage = () => {
                     </AlertDialogHeader>
                     <div className="flex items-center justify-between gap-2">
                       <AlertDialogCancel className={"flex-1 rounded-sm py-4.5 cursor-pointer"}>No, Keep it</AlertDialogCancel>
-                      <AlertDialogAction className={"flex-1 rounded-sm py-4.5 cursor-pointer"} onClick={() => deleteUrl(url?.id)}>
+                      <AlertDialogAction disabled={isPending} className={"flex-1 rounded-sm py-4.5 cursor-pointer"} onClick={() => deleteUrl(url?.id)}>
                         {isPending ? "Deleting..." : "Yes, Delete"}
                       </AlertDialogAction>
                     </div>

@@ -7,9 +7,9 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
-import CreateUrlForm from "./forms/create-url-form";
+import CreateUrlForm from "../forms/create-url-form";
 import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 
@@ -21,7 +21,10 @@ const CreateLinkDialog = () => {
     return (
         <Dialog open={open} onOpenChange={(res) => {
             setOpen(res);
-            if (!res) setSearchParams({});
+            if (!res) {
+                searchParams.delete("createNew");
+                setSearchParams(searchParams);
+            }
         }}>
             <DialogTrigger>
                 <Button className={"p-4.5 cursor-pointer rounded-md"}>

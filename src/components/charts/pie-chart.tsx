@@ -43,7 +43,7 @@ const DevicePieChart = ({ stats }: { stats: any[] }) => {
     return (
         <Card className="flex flex-col rounded-lg">
             <CardHeader className="items-center pb-0">
-                <CardTitle>Pie Chart</CardTitle>
+                <CardTitle>Devices</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer

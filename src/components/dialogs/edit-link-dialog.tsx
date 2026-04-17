@@ -8,7 +8,7 @@ import {
 import { getUrl } from "@/db/urls.db"
 import { useQuery } from "@tanstack/react-query"
 import { Pencil } from "lucide-react"
-import { EditLinkForm } from "./forms/edit-link-form"
+import { EditLinkForm } from "../forms/edit-link-form"
 import { useState } from "react"
 
 const EditLinkDialog = ({ id }: { id: string }) => {

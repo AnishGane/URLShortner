@@ -1,4 +1,4 @@
-import { Check, Copy, Download, EllipsisVertical, Loader2, Pencil, QrCode, Trash2 } from "lucide-react"
+import { Check, Copy, EllipsisVertical } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import {
     DropdownMenu,
@@ -9,17 +9,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "./ui/button"
 import React, { useState } from "react"
-import { useDeleteUrl } from "@/hooks/useDeleteUrl"
 import { Link } from "react-router-dom"
-import { copyToClipboard, downloadFile } from "@/lib/helper"
+import { copyToClipboard } from "@/lib/helper"
 import { toast } from "sonner"
-import EditLinkDialog from "./edit-link-dialog"
+import EditLinkDialog from "./dialogs/edit-link-dialog"
+import ViewQRDialog from "./dialogs/view-qr-dialog"
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
 const LinkCard = ({ url }: { url: any }) => {
     const [isCopied, setIsCopied] = useState(false);
-    const { mutate: deleteUrl, isPending: isDeleting } = useDeleteUrl();
 
     const copyShortUrl = async () => {
         const success = await copyToClipboard(`${APP_URL}${url.short_url}`);
@@ -28,13 +27,6 @@ const LinkCard = ({ url }: { url: any }) => {
             toast.success("Copied to clipboard");
             setTimeout(() => setIsCopied(false), 3000);
         }
-    }
-
-    const downloadImage = () => {
-        const imageUrl = url?.qr;
-        const fileName = url?.title;
-
-        downloadFile(imageUrl, fileName);
     }
 
     return (
@@ -67,40 +59,9 @@ const LinkCard = ({ url }: { url: any }) => {
                                 {isCopied ? "Copied" : "Copy Link"}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            {/* <DropdownMenuItem className={"cursor-pointer rounded-sm"}
-                                onClick={downloadImage}
-                            >
-                                <Download />
-                                Download
-                            </DropdownMenuItem> */}
-
-                            {/* <DropdownMenuItem className={"cursor-pointer rounded-sm"}>
-                                <Pencil />
-                                Edit Link
-                            </DropdownMenuItem> */}
                             <EditLinkDialog id={url.id} />
-
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className={"cursor-pointer rounded-sm"}>
-                                <QrCode />
-                                View Qr
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                                onClick={() => deleteUrl(url.id)}
-                                variant="destructive" className={"cursor-pointer rounded-sm"}>
-                                {isDeleting ? (
-                                    <>
-                                        <Loader2 className="animate-spin" />
-                                        Deleting...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Trash2 />
-                                        Delete
-                                    </>
-                                )}
-                            </DropdownMenuItem>
+                            <ViewQRDialog qr={url.qr} title={url.title} />
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </CardTitle>

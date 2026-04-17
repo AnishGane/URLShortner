@@ -1,4 +1,4 @@
-import CreateLinkDialog from "@/components/create-link-dialog";
+import CreateLinkDialog from "@/components/dialogs/create-link-dialog";
 import LinkCard from "@/components/link-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
