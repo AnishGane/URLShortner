@@ -8,10 +8,11 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { useCreateUrl } from "@/hooks/useCreateUrl";
 import { toast } from "sonner";
+import type React from "react";
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
-const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: any }) => {
+const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const { user } = useAuthContext();
 
     const form = useForm<createUrlSchemaType>({
@@ -122,7 +123,7 @@ const CreateUrlForm = ({ longLink, setOpen }: { longLink?: string, setOpen: any 
                         Custom Url (optional)
                     </FieldLabel>
                     <div className="flex items-center gap-2">
-                        <Card className="p-2 rounded-sm line-clamp-1 text-ellipsis">
+                        <Card className="p-2 rounded-sm line-clamp-1 text-ellipsis text-nowrap">
                             {APP_URL || "http://localhost:5173"}
                         </Card>
                         /

@@ -8,6 +8,7 @@ const APP_URL = import.meta.env.VITE_APP_URL;
 if (!APP_URL) {
   throw new Error("VITE_APP_URL environment variable is not configured");
 }
+
 export const useCreateUrl = () => {
   return useMutation({
     mutationFn: async ({ title, original_url, custom_url, userId }: any) => {

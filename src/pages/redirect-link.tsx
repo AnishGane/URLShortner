@@ -1,7 +1,7 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { getLongUrl } from "@/db/urls.db";
 import { storeClicks } from "@/lib/helper";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom"
 
@@ -27,8 +27,8 @@ const RedirectLink = () => {
 
     if (isLoading) {
         return (
-            <div className="py-8">
-                <Skeleton className="h-12 rounded-lg animate-pulse" />
+            <div className="py-8 flex items-center justify-center">
+                <Loader2 className="animate-spin" />
             </div>
         )
     }

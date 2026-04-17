@@ -22,7 +22,9 @@ export const useRealtimeUrls = (userId?: string) => {
           queryClient.setQueryData(["urls", userId], (old: any[] = []) => {
             if (payload.eventType === "INSERT") {
               if (old.find((u) => u.id === payload.new.id)) return old;
-              return [...old, payload.new];
+              return [...old, payload.new].sort(
+                (a, b) => b.created_at - a.created_at,
+              );
             }
 
             if (payload.eventType === "DELETE") {
