@@ -12,16 +12,16 @@ import { useEffect } from "react"
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
-export const EditLinkForm = ({ url, setOpen }) => {
+export const EditLinkForm = ({ url, setOpen }: { url: { id: string, title: string, original_url: string, custom_url: string, short_url: string }, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const { user } = useAuthContext();
     const { mutate: editUrl, isPending } = useEditUrl();
 
     const form = useForm<editUrlSchemaType>({
         resolver: zodResolver(editUrlSchema),
         defaultValues: {
-            title: "",
-            original_url: "",
-            custom_url: ""
+            title: url.title ?? "",
+            original_url: url.original_url ?? "",
+            custom_url: url.custom_url ?? ""
         }
     });
 
