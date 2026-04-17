@@ -1,4 +1,4 @@
-import { Check, Copy, Download, EllipsisVertical, Loader2, QrCode, Trash2 } from "lucide-react"
+import { Check, Copy, Download, EllipsisVertical, Loader2, Pencil, QrCode, Trash2 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import {
     DropdownMenu,
@@ -13,6 +13,7 @@ import { useDeleteUrl } from "@/hooks/useDeleteUrl"
 import { Link } from "react-router-dom"
 import { copyToClipboard, downloadFile } from "@/lib/helper"
 import { toast } from "sonner"
+import EditLinkDialog from "./edit-link-dialog"
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
@@ -37,7 +38,7 @@ const LinkCard = ({ url }: { url: any }) => {
     }
 
     return (
-        <Card className="px-4 py-4.5 rounded-lg">
+        <Card className="pl-4 py-4.5 rounded-lg">
             <CardHeader>
                 <CardTitle className="text-xl flex items-center justify-between">
                     <Link to={`/link/${url.id}`} onClick={() => window.scrollTo({
@@ -66,12 +67,19 @@ const LinkCard = ({ url }: { url: any }) => {
                                 {isCopied ? "Copied" : "Copy Link"}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className={"cursor-pointer rounded-sm"}
+                            {/* <DropdownMenuItem className={"cursor-pointer rounded-sm"}
                                 onClick={downloadImage}
                             >
                                 <Download />
                                 Download
-                            </DropdownMenuItem>
+                            </DropdownMenuItem> */}
+
+                            {/* <DropdownMenuItem className={"cursor-pointer rounded-sm"}>
+                                <Pencil />
+                                Edit Link
+                            </DropdownMenuItem> */}
+                            <EditLinkDialog id={url.id} />
+
                             <DropdownMenuSeparator />
                             <DropdownMenuItem className={"cursor-pointer rounded-sm"}>
                                 <QrCode />

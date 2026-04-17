@@ -153,13 +153,15 @@ const LinkPage = () => {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Are you sure about it?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete your link from our server.
+                        You are deleting <strong className="underline font-semibold">
+                          {url?.title}
+                        </strong>. This action cannot be undone. This will permanently delete your link from our server.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <div className="flex items-center justify-between gap-2">
-                      <AlertDialogCancel className={"flex-1 rounded-sm py-4.5 cursor-pointer"}>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel className={"flex-1 rounded-sm py-4.5 cursor-pointer"}>No, Keep it</AlertDialogCancel>
                       <AlertDialogAction className={"flex-1 rounded-sm py-4.5 cursor-pointer"} onClick={() => deleteUrl(url?.id)}>
-                        {isPending ? "Deleting..." : "Continue"}
+                        {isPending ? "Deleting..." : "Yes, Delete"}
                       </AlertDialogAction>
                     </div>
                   </AlertDialogContent>

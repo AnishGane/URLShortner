@@ -1,5 +1,6 @@
 import { supabase } from "@/db/supabase";
 import { UAParser } from "ua-parser-js";
+import QRCode from "qrcode";
 
 const parser = new UAParser();
 
@@ -54,4 +55,30 @@ export const downloadFile = (url: string, fileName?: string) => {
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);
+};
+
+export const generateQrFromText = async (text: string): Promise<Blob> => {
+  try {
+    // create canvas
+    const canvas = document.createElement("canvas");
+
+    // draw QR onto canvas
+    await QRCode.toCanvas(canvas, text, {
+      width: 300,
+      margin: 2,
+    });
+
+    // convert canvas → blob
+    const blob: Blob | null = await new Promise((resolve) =>
+      canvas.toBlob((b) => resolve(b), "image/png"),
+    );
+
+    if (!blob) {
+      throw new Error("QR generation failed");
+    }
+
+    return blob;
+  } catch (error) {
+    throw new Error("Failed to generate QR");
+  }
 };
