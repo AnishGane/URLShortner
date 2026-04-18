@@ -69,7 +69,7 @@ const LinkCard = ({ url }: { url: any }) => {
                     {false ? (
                         <div className="h-6 w-40 bg-muted animate-pulse rounded" />
                     ) : (
-                        <p className="underline text-blue-400 text-lg font-medium mt-2">
+                        <p className="text-blue-400 text-lg font-medium mt-2">
                             {url.custom_url ? url.custom_url : url.short_url}
                         </p>
                     )}

@@ -16,7 +16,7 @@ const RedirectLink = () => {
     });
 
     useEffect(() => {
-        if (!data) return;
+        if (!data?.original_url) return;
 
         storeClicks({
             id: data.id,
