@@ -12,7 +12,20 @@ import { useEffect } from "react"
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
-export const EditLinkForm = ({ url, setOpen }: { url: { id: string, title: string, original_url: string, custom_url: string, short_url: string }, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
+interface EditLinkFormProps {
+    url: URL,
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+type URL = {
+    id: string;
+    title: string;
+    original_url: string;
+    custom_url: string;
+    short_url: string;
+}
+
+export const EditLinkForm = ({ url, setOpen }: EditLinkFormProps) => {
     const { user } = useAuthContext();
     const { mutate: editUrl, isPending } = useEditUrl();
 
@@ -27,14 +40,11 @@ export const EditLinkForm = ({ url, setOpen }: { url: { id: string, title: strin
 
     useEffect(() => {
         if (!url) return;
-        // Only reset if form is untouched
-        if (!form.formState.isDirty) {
-            form.reset({
-                title: url.title ?? "",
-                original_url: url.original_url ?? "",
-                custom_url: url.custom_url ?? ""
-            });
-        }
+        form.reset({
+            title: url.title ?? "",
+            original_url: url.original_url ?? "",
+            custom_url: url.custom_url ?? ""
+        });
     }, [url?.id]);
 
     const onSubmit = async (data: editUrlSchemaType) => {
@@ -44,7 +54,7 @@ export const EditLinkForm = ({ url, setOpen }: { url: { id: string, title: strin
                 return;
             }
 
-            const normalizedCustomUrl = data.custom_url?.trim() ? data.custom_url?.trim() : null;
+            const normalizedCustomUrl = data.custom_url?.trim() || url.custom_url || null;
 
             editUrl({
                 title: data.title,

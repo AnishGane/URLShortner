@@ -17,9 +17,7 @@ export const getLongUrl = async (id: string) => {
   const { data, error } = await supabase
     .from("urls")
     .select("original_url, id")
-    .or(`short_url.eq.${id}, custom_url.eq.${id}`)
-
-  console.log("RAW MATCH:", data);
+    .or(`short_url.eq.${id}, custom_url.eq.${id}`);
 
   if (error) {
     console.error(error.message);
@@ -36,7 +34,6 @@ export const getUrl = async (id: string) => {
     .from("urls")
     .select("*")
     .eq("id", id)
-    // .eq("user_id", user_id)
     .maybeSingle();
   if (error) {
     console.error(error.message);
