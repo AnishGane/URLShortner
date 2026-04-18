@@ -107,7 +107,7 @@ const LinkPage = () => {
               </h2>
               <div className="flex items-center gap-2">
                 <Link className="size-3.5" />
-                <a className="text-blue-400 hover:underline" href={`${APP_URL}${link}`} target="_blank" rel="noopener noreferrer">
+                <a className="text-blue-400 hover:underline" href={`${APP_URL}/${link}`} target="_blank" rel="noopener noreferrer">
                   {APP_URL}{link}
                 </a>
               </div>
