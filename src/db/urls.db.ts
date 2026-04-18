@@ -18,7 +18,7 @@ export const getLongUrl = async (id: string) => {
     .from("urls")
     .select("original_url, id")
     .or(`short_url.eq.${id}, custom_url.eq.${id}`)
-    .maybeSingle();
+    .single();
   if (error) {
     console.error(error.message);
     throw new Error("Error fetching long URL");

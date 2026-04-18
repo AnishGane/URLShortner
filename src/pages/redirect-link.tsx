@@ -9,14 +9,18 @@ const RedirectLink = () => {
     const { id } = useParams();
     if (!id) return <div>Invalid link</div>;
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError, error } = useQuery({
         queryKey: ["link", id],
         queryFn: () => getLongUrl(id),
         enabled: !!id
     });
 
+    console.log("supabase response:", data, error);
+    console.log("LOOKING FOR:", id);
+
     useEffect(() => {
         if (!data?.original_url) return;
+        if (!data.id) return;
 
         storeClicks({
             id: data.id,
