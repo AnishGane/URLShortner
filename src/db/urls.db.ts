@@ -18,15 +18,17 @@ export const getLongUrl = async (id: string) => {
     .from("urls")
     .select("original_url, id")
     .or(`short_url.eq.${id}, custom_url.eq.${id}`)
-    .single();
+
+  console.log("RAW MATCH:", data);
+
   if (error) {
     console.error(error.message);
     throw new Error("Error fetching long URL");
   }
-  if (!data) {
+  if (!data || data.length === 0) {
     throw new Error("URL not found");
   }
-  return data;
+  return data[0];
 };
 
 export const getUrl = async (id: string) => {
