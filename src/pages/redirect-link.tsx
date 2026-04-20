@@ -16,9 +16,13 @@ const RedirectLink = () => {
     });
 
     useEffect(() => {
-        if (!data?.original_url) return;
-        if (!data.id) return;
+        if (!data?.original_url || !data.id) return;
 
+        // Block the unsafe link
+        if (data.is_safe === false) {
+            window.location.replace(`/warning/${id}`);
+            return;
+        }
         storeClicks({
             id: data.id,
         });

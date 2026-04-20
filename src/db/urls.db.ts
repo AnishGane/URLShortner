@@ -16,7 +16,7 @@ export const getUrls = async (userId: string) => {
 export const getLongUrl = async (id: string) => {
   const { data, error } = await supabase
     .from("urls")
-    .select("original_url, id")
+    .select("original_url, id, is_safe")
     .or(`short_url.eq.${id}, custom_url.eq.${id}`);
 
   if (error) {

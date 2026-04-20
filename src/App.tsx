@@ -7,6 +7,7 @@ import RedirectLink from "./pages/redirect-link"
 import ProtectedRoute from "./components/protected-route"
 import PublicRoute from "./components/public-route"
 import DashboardPage from "./pages/dashboard"
+import WarningPage from "./pages/warning-page"
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,11 @@ const router = createBrowserRouter([
         path: "/:id",
         element: (
           <RedirectLink />
+        )
+      }, {
+        path: "/warning/:id",
+        element: (
+          <WarningPage />
         )
       }
     ]
