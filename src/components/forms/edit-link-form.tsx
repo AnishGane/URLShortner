@@ -32,20 +32,23 @@ export const EditLinkForm = ({ url, setOpen }: EditLinkFormProps) => {
     const form = useForm<editUrlSchemaType>({
         resolver: zodResolver(editUrlSchema),
         defaultValues: {
-            title: url.title ?? "",
-            original_url: url.original_url ?? "",
-            custom_url: url.custom_url ?? ""
+            title: "",
+            original_url: "",
+            custom_url: ""
         }
     });
 
     useEffect(() => {
         if (!url) return;
+
         form.reset({
-            title: url.title ?? "",
-            original_url: url.original_url ?? "",
-            custom_url: url.custom_url ?? ""
+            title: url.title || "",
+            original_url: url.original_url || "",
+            custom_url: url.custom_url || ""
         });
+
     }, [url?.id]);
+
 
     const onSubmit = async (data: editUrlSchemaType) => {
         try {
@@ -75,7 +78,8 @@ export const EditLinkForm = ({ url, setOpen }: EditLinkFormProps) => {
         }
     }
 
-    const previewSlug = form.watch("custom_url") || url.short_url;
+    const watched = form.watch("custom_url");
+    const previewSlug = watched?.trim() ? watched.trim() : (url.custom_url || url.short_url);
 
     return (
         <div className="mt-4">
@@ -101,7 +105,6 @@ export const EditLinkForm = ({ url, setOpen }: EditLinkFormProps) => {
                                     placeholder="My short url title"
                                     autoComplete="off"
                                     className="py-4.5"
-                                    onChange={(e) => field.onChange(e.target.value)}
                                     onBlur={(e) => {
                                         field.onChange(e.target.value.trim());
                                         field.onBlur();
@@ -131,7 +134,6 @@ export const EditLinkForm = ({ url, setOpen }: EditLinkFormProps) => {
                                     type="url"
                                     autoComplete="off"
                                     className="py-4.5"
-                                    onChange={(e) => field.onChange(e.target.value)}
                                     onBlur={(e) => {
                                         field.onChange(e.target.value.trim());
                                         field.onBlur();
@@ -165,7 +167,6 @@ export const EditLinkForm = ({ url, setOpen }: EditLinkFormProps) => {
                                         placeholder="custom url"
                                         autoComplete="off"
                                         className="py-4.5"
-                                        onChange={(e) => field.onChange(e.target.value)}
                                         onBlur={(e) => {
                                             field.onChange(e.target.value.trim());
                                             field.onBlur();
