@@ -29,7 +29,7 @@ const WarningPage = () => {
         <div className="p-6 text-center">
             <h1>⚠️ Unsafe Link Detected</h1>
             <p>This link may be harmful.</p>
-            {error && <p className="text-destructive mt-2">{error.message}</p>}
+            {error && <p className="text-destructive mt-2">{error?.message ?? "Error fetching link"}</p>}
 
             <div className="mt-4 flex gap-4 justify-center">
                 <Button
