@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Pencil } from "lucide-react"
 import { EditLinkForm } from "../forms/edit-link-form"
 import { useState } from "react"
+import { Skeleton } from "../ui/skeleton"
 
 const EditLinkDialog = ({ id }: { id: string }) => {
     const [open, setOpen] = useState(false);
@@ -37,7 +38,10 @@ const EditLinkDialog = ({ id }: { id: string }) => {
                         <DialogTitle>Update Link</DialogTitle>
                         {url
                             ? <EditLinkForm url={url} setOpen={setOpen} />
-                            : <div className="mt-4 text-center text-sm text-muted-foreground">Loading...</div>}
+                            : <div className="mt-4 text-center text-sm text-muted-foreground">
+                                <Skeleton className="h-40 w-full animate-pulse bg-neutral-200" />
+                                <Skeleton className="h-14 mt-2 w-full animate-pulse bg-neutral-200" />
+                            </div>}
                     </DialogHeader>
                 </DialogContent>
             </Dialog>

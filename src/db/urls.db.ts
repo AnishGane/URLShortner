@@ -35,6 +35,7 @@ export const getUrl = async (id: string) => {
     .select("*")
     .eq("id", id)
     .maybeSingle();
+
   if (error) {
     console.error(error.message);
     throw new Error("Error fetching URL");
