@@ -19,16 +19,7 @@ export const useCreateUrl = () => {
         throw new Error("Invalid URL");
       }
 
-      const { is_safe, risk_reason } = checkUrlSafety(original_url);
-
-      // External check
-      // try {
-      //   const safe = await checkSafeBrowsing(original_url);
-      //   if (!safe) {
-      //     is_safe = false;
-      //     risk_reason = "Flagged by Safe Browsing";
-      //   }
-      // } catch {}
+      let { is_safe, risk_reason } = checkUrlSafety(original_url);
 
       const shortUrl = nanoid(8);
 
@@ -67,7 +58,8 @@ export const useCreateUrl = () => {
 
       // 2. resolve slug
       const slug = data.custom_url || data.short_url;
-      const shortLink = `${APP_URL}${slug}`;
+      const normalizedAppUrl = APP_URL.endsWith("/") ? APP_URL : `${APP_URL}/`;
+      const shortLink = `${normalizedAppUrl}${slug}`;
 
       // 3. generate QR from short link(with slug)
       const qrBlob = await generateQrFromText(shortLink);

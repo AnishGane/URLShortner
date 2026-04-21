@@ -7,10 +7,10 @@ import { useAuthContext } from "@/context/auth-context";
 import { getClicksForaURL } from "@/db/clicks.db";
 import { getUrl } from "@/db/urls.db";
 import { useDeleteUrl } from "@/hooks/useDeleteUrl";
-import { copyToClipboard, downloadFile } from "@/lib/helper";
+import { copyToClipboard, downloadFile, shareLink } from "@/lib/helper";
 import { LinkSkeleton } from "@/skeletons/link-page-skeleton";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Check, Copy, Download, Link, Loader2, Trash2 } from "lucide-react";
+import { ArrowLeft, Check, Copy, Download, Link, Loader2, Share2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useParams } from "react-router-dom"
 import { toast } from "sonner";
@@ -138,6 +138,12 @@ const LinkPage = () => {
                   {isCopied ? <Check /> : <Copy />}
                   <span className="sr-only">Copy short url</span>
                 </Button>
+                <Button title="Download qr code" variant="outline"
+                  onClick={downloadImage}
+                  className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
+                  <Download />
+                  <span className="sr-only">Download qr code</span>
+                </Button>
                 <AlertDialog>
                   <AlertDialogTrigger>
                     <Button disabled={isPending} title="Delete link" variant="destructive"
@@ -166,12 +172,11 @@ const LinkPage = () => {
                     </div>
                   </AlertDialogContent>
                 </AlertDialog>
-
-                <Button title="Download qr code" variant="outline"
-                  onClick={downloadImage}
+                <Button title="Share link" variant="secondary"
+                  onClick={() => shareLink(`${APP_URL}${link}`)}
                   className={"cursor-pointer rounded-md px-3.5 py-4.5"}>
-                  <Download />
-                  <span className="sr-only">Download qr code</span>
+                  <Share2 />
+                  <span className="sr-only">Share this link</span>
                 </Button>
               </div>
             </div>

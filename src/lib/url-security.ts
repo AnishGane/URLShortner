@@ -1,72 +1,89 @@
 const WHITELIST_DOMAINS = new Set([
   "instagram.com",
-  "www.instagram.com",
   "google.com",
-  "www.google.com",
   "youtube.com",
-  "www.youtube.com",
   "github.com",
-  "www.github.com",
 ]);
+
+// Normalize hostname (removes www.)
+function normalizeHostname(hostname: string) {
+  return hostname.replace(/^www\./, "");
+}
 
 // Check the validity of a URL
 export function isValidUrl(url: string) {
   try {
-    new URL(url);
-    return true;
-  } catch (error) {
+    const parsedUrl = new URL(url);
+    return (
+      ["http:", "https:"].includes(parsedUrl.protocol) &&
+      Boolean(parsedUrl.hostname)
+    );
+  } catch {
     return false;
   }
 }
 
 function getHostname(url: string) {
   try {
-    const parsedUrl = new URL(url);
-    return parsedUrl.hostname.toLowerCase();
+    return new URL(url).hostname.toLowerCase();
   } catch {
     return null;
   }
 }
 
 export function checkUrlSafety(url: string) {
-  const hostname = getHostname(url);
+  const hostnameRaw = getHostname(url);
 
-  if (!hostname) {
+  if (!hostnameRaw) {
     return {
       is_safe: false,
       risk_reason: "Invalid URL",
     };
   }
 
-  // whitelist override (highest priority)
-  if (WHITELIST_DOMAINS.has(hostname)) {
-    return {
-      is_safe: true,
-      risk_reason: "Whitelisted domain",
-    };
-  }
-
-  // suspicious heuristics
+  const hostname = normalizeHostname(hostnameRaw);
   const lowered = url.toLowerCase();
-  const suspiciousWords = [
-    "login",
-    "verify",
-    "password",
-    "bank",
-    "free",
-    "win",
-  ];
 
+  // Detect IP usage (strong signal)
+  const hasIpv4 =
+    /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+      hostname,
+    );
+
+  const hasIpv6 = hostname.includes(":") && /^[0-9a-f:]+$/i.test(hostname);
+
+  const hasIp = hasIpv4 || hasIpv6;
+
+  const isTooLong = url.length > 200;
+
+  // Contextual keyword check (NOT standalone)
+  const suspiciousWords = ["login", "verify", "password", "bank"];
   const hasKeyword = suspiciousWords.some((w) => lowered.includes(w));
 
-  const isTooLong = url.length > 120;
+  // Only suspicious if keyword + something else risky
+  const keywordRisk = hasKeyword && (hasIp || isTooLong);
 
-  const hasIp = /^\d+\.\d+\.\d+\.\d+/.test(hostname);
+  // Whitelist (soft trust)
+  const isWhitelisted = WHITELIST_DOMAINS.has(hostname);
 
-  const isSuspicious = hasKeyword || isTooLong || hasIp;
+  // Final decision
+  const isSuspicious = hasIp || isTooLong || keywordRisk;
+
+  // Whitelist reduces false positives but does NOT override hard risks
+  const is_safe = isWhitelisted ? !hasIp && !isTooLong : !isSuspicious;
+
+  let risk_reason = "";
+
+  if (hasIp) {
+    risk_reason = "IP-based URL detected";
+  } else if (isTooLong) {
+    risk_reason = "URL too long (possible obfuscation)";
+  } else if (keywordRisk) {
+    risk_reason = "Suspicious keyword with risk context";
+  }
 
   return {
-    is_safe: !isSuspicious,
-    reason: isSuspicious ? "Suspicious pattern detected" : "",
+    is_safe,
+    risk_reason,
   };
 }

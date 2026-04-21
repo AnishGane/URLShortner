@@ -19,7 +19,7 @@ const RedirectLink = () => {
         if (!data?.original_url || !data.id) return;
 
         // Block the unsafe link
-        if (data.is_safe === false) {
+        if (data.is_safe !== true) {
             window.location.replace(`/warning/${id}`);
             return;
         }

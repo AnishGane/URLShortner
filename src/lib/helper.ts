@@ -82,3 +82,35 @@ export const generateQrFromText = async (text: string): Promise<Blob> => {
     throw new Error("Failed to generate QR");
   }
 };
+
+export const getDisplayNameFromEmail = (email: string) => {
+  const localPart = email.split("@")[0] || "";
+  const sanitizedLocalPart = localPart.replace(/[0-9]/g, "");
+  return (
+    sanitizedLocalPart.charAt(0).toUpperCase() + sanitizedLocalPart.slice(1)
+  );
+};
+
+export const shareLink = async (link: string) => {
+  // Native share (best for UX on mobile)
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "Check this out",
+        text: "Here is a link for you",
+        url: link,
+      });
+      return;
+    } catch (error) {
+      // User cancelled or share failed—fall through to clipboard
+    }
+  }
+
+  // Fallback → copy to clipboard
+  const success = await copyToClipboard(link);
+  if (success) {
+    alert("Link copied to clipboard");
+  } else {
+    alert("Failed to copy link");
+  }
+};

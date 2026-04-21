@@ -13,17 +13,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Loader2, LogOut } from "lucide-react";
 import { useAuthContext } from "@/context/auth-context";
 import { toast } from "sonner";
+import { getDisplayNameFromEmail } from "@/lib/helper";
 
 const Header = () => {
     const navigate = useNavigate();
     const { user, logoutUser, loading, isAuthenticated } = useAuthContext();
     const email = user?.email;
-
-    const getDisplayNameFromEmail = (email: string) => {
-        const upperCaseEmail = email.charAt(0).toUpperCase() + email.slice(1).replace(/[0-9]/g, '');
-        const parts = upperCaseEmail.split("@");
-        return parts[0];
-    }
 
     const handleLogout = async () => {
         try {
@@ -45,8 +40,22 @@ const Header = () => {
                 <div className="flex gap-2">
                     {!user ? (
                         <>
-                            <Button onClick={() => navigate("/auth")} className={"cursor-pointer px-4 py-4 rounded-md"}>Sign In</Button>
-                            <Button variant="outline" onClick={() => navigate("/auth")} className={"cursor-pointer px-4 py-4 rounded-md"}>Sign Up</Button>
+                            <Button onClick={() => {
+                                navigate("/auth");
+                                window.scrollTo({
+                                    top: 0,
+                                    behavior: "smooth"
+                                })
+                            }}
+                                className={"cursor-pointer px-4 py-4 rounded-md"}>Sign In</Button>
+                            <Button variant="outline" onClick={() => {
+                                navigate("/auth");
+                                window.scrollTo({
+                                    top: 0,
+                                    behavior: "smooth"
+                                })
+                            }}
+                                className={"cursor-pointer px-4 py-4 rounded-md"}>Sign Up</Button>
                         </>
                     ) : (
                         <DropdownMenu>
