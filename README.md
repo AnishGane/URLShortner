@@ -12,6 +12,10 @@
 
 **Live Demo:** [https://urlshortner-lzyy.onrender.com/](https://urlshortner-lzyy.onrender.com/)
 
+<p align="center">
+  <img src="src/assets/image.png" alt="Snip URL Shortener Banner" width="600" />
+</p>
+
 ---
 
 ## Features
@@ -24,6 +28,8 @@
 - **Form Validation** — Schema-driven validation with Zod and React Hook Form
 - **Copy to Clipboard** — One-click copy for any short URL
 - **Optimistic UI** — Instant feedback with React Query mutations
+- **Share Links** — Share the url links to others
+- **Secure URLs** — All shortened URLs are checked for safety, with clear warnings for potentially unsafe links
 - **Responsive Design** — Mobile-first, works on all screen sizes
 
 ---
