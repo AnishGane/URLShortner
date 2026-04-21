@@ -1,5 +1,7 @@
 import { supabase, supabaseUrl } from "@/db/supabase";
 import { generateQrFromText } from "@/lib/helper";
+// import { checkSafeBrowsing } from "@/lib/safe-browsing";
+import { checkUrlSafety, isValidUrl } from "@/lib/url-security";
 import { useMutation } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
 
@@ -12,6 +14,13 @@ if (!APP_URL) {
 export const useCreateUrl = () => {
   return useMutation({
     mutationFn: async ({ title, original_url, custom_url, userId }: any) => {
+      // Validate the URL
+      if (!isValidUrl(original_url)) {
+        throw new Error("Invalid URL");
+      }
+
+      let { is_safe, risk_reason } = checkUrlSafety(original_url);
+
       const shortUrl = nanoid(8);
 
       // checking the custom url uniqueness
@@ -37,6 +46,9 @@ export const useCreateUrl = () => {
             short_url: shortUrl,
             custom_url,
             user_id: userId,
+            is_safe,
+            risk_reason,
+            checked_at: new Date().toISOString(),
           },
         ])
         .select()
@@ -46,7 +58,8 @@ export const useCreateUrl = () => {
 
       // 2. resolve slug
       const slug = data.custom_url || data.short_url;
-      const shortLink = `${APP_URL}/${slug}`;
+      const normalizedAppUrl = APP_URL.endsWith("/") ? APP_URL : `${APP_URL}/`;
+      const shortLink = `${normalizedAppUrl}${slug}`;
 
       // 3. generate QR from short link(with slug)
       const qrBlob = await generateQrFromText(shortLink);
