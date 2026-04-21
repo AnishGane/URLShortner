@@ -41,7 +41,7 @@ const DashboardPage = () => {
     const totalUrls = filteredUrls.length
 
     return (
-        <div className="py-12 px-3">
+        <div className="py-6 sm:py-12 px-3">
             {/* Top Stats Card (Dynamic) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {loading ? (

@@ -35,7 +35,7 @@ const FeatureSection = ({
   }
 
   return (
-    <section className={cn("py-16", className)}>
+    <section className={cn("py-8 sm:py-16", className)}>
       <div className="container mx-auto">
         <h2 className="text-xl md:text-3xl font-medium mb-8 sm:mb-12">Features</h2>
         <div className="flex w-full items-start justify-between gap-12">
@@ -48,7 +48,6 @@ const FeatureSection = ({
                 <AccordionItem
                   key={tab.id}
                   value={`item-${tab.id}`}
-                  className="transition-opacity hover:opacity-80"
                 >
                   <AccordionTrigger
                     onClick={() => {
@@ -58,7 +57,7 @@ const FeatureSection = ({
                     className="cursor-pointer py-4 transition"
                   >
                     <h4
-                      className={`text-base ${tab.id === activeTabId ? "text-foreground" : "text-muted-foreground"}`}
+                      className={`text-sm sm:text-base ${tab.id === activeTabId ? "text-foreground" : "text-muted-foreground"}`}
                     >
                       {tab.title}
                     </h4>
@@ -66,7 +65,7 @@ const FeatureSection = ({
                   <AccordionContent className="pb-2">
                     <div className="flex gap-2">
                       <ArrowRightFromLine className="text-foreground/80" />
-                      <p className="text-sm tracking-wide text-left text-muted-foreground">
+                      <p className="text-sm tracking-wide text-left text-foreground/70">
                         {tab.description}
                       </p>
                     </div>

@@ -14,6 +14,8 @@ import { copyToClipboard } from "@/lib/helper"
 import { toast } from "sonner"
 import EditLinkDialog from "./dialogs/edit-link-dialog"
 import ViewQRDialog from "./dialogs/view-qr-dialog"
+import { Badge } from "./ui/badge"
+import { cn } from "@/lib/utils"
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
@@ -30,7 +32,7 @@ const LinkCard = ({ url }: { url: any }) => {
     }
 
     return (
-        <Card className="pl-4 py-4.5 rounded-lg">
+        <Card className="pl-1 sm:pl-4 py-4.5 rounded-lg">
             <CardHeader>
                 <CardTitle className="text-xl flex items-center justify-between">
                     <Link to={`/link/${url.id}`} onClick={() => window.scrollTo({
@@ -77,7 +79,10 @@ const LinkCard = ({ url }: { url: any }) => {
 
                     <div className="flex items-center mt-3 text-xs text-muted-foreground gap-2">
                         <div className="size-[5px] bg-foreground/60 rounded-full" />
-                        <p>{new Date(url.created_at).toLocaleString()}</p>
+                        <div className="flex items-center justify-between w-full">
+                            <p>{new Date(url.created_at).toLocaleString()}</p>
+                            <Badge className={cn(" text-[10px] tracking-wide", url.is_safe ? "bg-green-400/80" : "bg-red-400/80")}>{url.is_safe ? "Safe" : "Unsafe"}</Badge>
+                        </div>
                     </div>
                 </CardContent>
             </CardHeader>

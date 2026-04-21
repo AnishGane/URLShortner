@@ -12,7 +12,7 @@ const Faqs = () => {
     };
 
     return (
-        <div className="py-8">
+        <div className="py-4 sm:py-8">
             <h2 className="text-xl md:text-3xl font-medium mb-8">FAQs <span className="text-primary text-sm font-normal">(Frequently Asked Questions)</span></h2>
             <Accordion
                 className="w-full max-w-4xl mx-auto"
@@ -26,7 +26,7 @@ const Faqs = () => {
                         value={item.value}>
                         <AccordionTrigger className={"cursor-pointer text-base"}>
                             <h4
-                                className={`text-base ${item.id === activeTabId ? "text-foreground" : "text-muted-foreground"}`}
+                                className={`text-sm sm:text-base ${item.id === activeTabId ? "text-foreground" : "text-muted-foreground"}`}
                             >
                                 {item.trigger}
                             </h4>

@@ -97,7 +97,7 @@ export const shareLink = async (link: string) => {
     try {
       await navigator.share({
         title: "Check this out",
-        text: "Here is a link for you",
+        text: "Check out this link",
         url: link,
       });
       return;
@@ -106,11 +106,11 @@ export const shareLink = async (link: string) => {
     }
   }
 
-  // Fallback → copy to clipboard
-  const success = await copyToClipboard(link);
-  if (success) {
-    alert("Link copied to clipboard");
-  } else {
-    alert("Failed to copy link");
-  }
+  // // Fallback → copy to clipboard
+  // const success = await copyToClipboard(link);
+  // if (success) {
+  //   alert("Link copied to clipboard");
+  // } else {
+  //   alert("Failed to copy link");
+  // }
 };

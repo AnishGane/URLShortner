@@ -180,6 +180,7 @@ const LinkPage = () => {
                 </Button>
               </div>
             </div>
+            {!url?.is_safe && <p className="mt-4">Risk reason: {url?.risk_reason || "Unknown reason"} ({url?.is_safe ? "Safe Link" : "Unsafe Link"})</p>}
           </div>
         </Card>
         {/* Analytics */}

@@ -37,7 +37,7 @@ const LandingPage = () => {
                 </form>
             </div>
 
-            <div className="p-2 rounded-xl bg-foreground/10 shadow-[5px_10px_10px_10px_rgba(0,0,0,0.12)_inset] mask-b-from-70% my-8 md:my-16">
+            <div className="p-2 rounded-xl bg-foreground/10 shadow-[5px_10px_10px_10px_rgba(0,0,0,0.12)_inset] mask-b-from-60% sm:mask-b-from-70% my-8 md:my-16">
                 <img src="https://res.cloudinary.com/du7znrqi5/image/upload/v1776436399/Landing-page-image_gc22yl.webp" alt="Landing page image" className="w-full rounded-lg object-cover object-top select-none pointer-events-none" />
             </div>
 
