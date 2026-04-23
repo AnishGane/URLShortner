@@ -54,7 +54,7 @@ const DashboardPage = () => {
                         <Card className="flex flex-row">
                             <CardHeader className=" flex-1 rounded-none">
                                 <CardTitle className="font-normal">Total URLs Created</CardTitle>
-                                <Link className="text-muted-foreground/30 size-7" />
+                                <Link className="text-muted-foreground/80 size-7" />
                             </CardHeader>
                             <CardContent className="text-xl md:text-5xl font-medium flex items-center justify-center">{urls.length}
                             </CardContent>
@@ -62,7 +62,7 @@ const DashboardPage = () => {
                         <Card className="flex flex-row">
                             <CardHeader className=" flex-1 rounded-none">
                                 <CardTitle className="font-normal">Total Clicks
-                                    <MouseLeftIcon className="text-muted-foreground/20 size-7 mt-1" />
+                                    <MouseLeftIcon className="text-muted-foreground/80 size-7 mt-1" />
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="text-xl md:text-5xl font-medium flex items-center justify-center">
@@ -80,8 +80,8 @@ const DashboardPage = () => {
 
             {/* Search Input field */}
             <div className="mb-6" >
-                <InputGroup className=" py-4.5 bg-background">
-                    <InputGroupInput id="inline-end-input" type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search your links" className="" />
+                <InputGroup className=" py-4.5 bg-background!">
+                    <InputGroupInput id="inline-end-input" type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search your links" />
                     <InputGroupAddon align="inline-end" className="mr-1">
                         {debounceValue ? (
                             <Button

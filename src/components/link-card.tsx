@@ -81,7 +81,7 @@ const LinkCard = ({ url }: { url: any }) => {
                         <div className="size-[5px] bg-foreground/60 rounded-full" />
                         <div className="flex items-center justify-between w-full">
                             <p>{new Date(url.created_at).toLocaleString()}</p>
-                            <Badge className={cn(" text-[10px] tracking-wide", url.is_safe ? "bg-green-400/80" : "bg-red-400/80")}>{url.is_safe ? "Safe" : "Unsafe"}</Badge>
+                            <Badge className={cn(" text-[10px] tracking-wide text-foreground", url.is_safe ? "bg-green-400/60" : "bg-red-400/70")}>{url.is_safe ? "Safe" : "Unsafe"}</Badge>
                         </div>
                     </div>
                 </CardContent>

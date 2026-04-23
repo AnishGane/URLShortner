@@ -14,6 +14,7 @@ import { Loader2, LogOut } from "lucide-react";
 import { useAuthContext } from "@/context/auth-context";
 import { toast } from "sonner";
 import { getDisplayNameFromEmail } from "@/lib/helper";
+import { ModeToggle } from "./mode-toggle";
 
 const Header = () => {
     const navigate = useNavigate();
@@ -58,49 +59,52 @@ const Header = () => {
                                 className={"cursor-pointer px-4 py-4 rounded-md"}>Sign Up</Button>
                         </>
                     ) : (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <Avatar className={"size-8"}>
-                                    {user?.user_metadata?.profile_pic ? (
-                                        <>
-                                            <AvatarImage loading="lazy" src={`${user?.user_metadata?.profile_pic}?width=64&height=64&resize=cover`}
-                                                sizes="32px"
-                                            />
-                                            <AvatarFallback>URL</AvatarFallback>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <AvatarImage loading="lazy" src="https://github.com/shadcn.png?s=64"
-                                                sizes="32px" />
-                                            <AvatarFallback>CN</AvatarFallback>
-                                        </>
-                                    )}
-                                </Avatar>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className={"mt-1"}>
-                                <DropdownMenuGroup>
-                                    <DropdownMenuLabel>{user?.user_metadata?.name || (email ? getDisplayNameFromEmail(email) : "User")}</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                        onSelect={(e) =>
-                                            e.preventDefault()
-                                        }
-                                        onClick={handleLogout}
-                                        variant="destructive" className={"p-1.5 rounded-sm cursor-pointer"}>
-                                        {loading ? (
+                        <div className="flex items-center justify-center gap-4">
+                            <ModeToggle />
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Avatar className={"size-8"}>
+                                        {user?.user_metadata?.profile_pic ? (
                                             <>
-                                                <Loader2 className="animate-spin" />
-                                                <span className="line-clamp-1">Logging out...</span>
-                                            </>) : (
+                                                <AvatarImage loading="lazy" src={`${user?.user_metadata?.profile_pic}?width=64&height=64&resize=cover`}
+                                                    sizes="32px"
+                                                />
+                                                <AvatarFallback>URL</AvatarFallback>
+                                            </>
+                                        ) : (
                                             <>
-                                                <LogOut />
-                                                Logout
+                                                <AvatarImage loading="lazy" src="https://github.com/shadcn.png?s=64"
+                                                    sizes="32px" />
+                                                <AvatarFallback>CN</AvatarFallback>
                                             </>
                                         )}
-                                    </DropdownMenuItem>
-                                </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                    </Avatar>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className={"mt-1"}>
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuLabel>{user?.user_metadata?.name || (email ? getDisplayNameFromEmail(email) : "User")}</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            onSelect={(e) =>
+                                                e.preventDefault()
+                                            }
+                                            onClick={handleLogout}
+                                            variant="destructive" className={"p-1.5 rounded-sm cursor-pointer"}>
+                                            {loading ? (
+                                                <>
+                                                    <Loader2 className="animate-spin" />
+                                                    <span className="line-clamp-1">Logging out...</span>
+                                                </>) : (
+                                                <>
+                                                    <LogOut />
+                                                    Logout
+                                                </>
+                                            )}
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
                     )}
                 </div>
             </nav>
