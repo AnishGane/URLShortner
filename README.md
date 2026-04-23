@@ -31,6 +31,7 @@
 - **Share Links** — Share the url links to others
 - **Secure URLs** — All shortened URLs are checked for safety, with clear warnings for potentially unsafe links
 - **Responsive Design** — Mobile-first, works on all screen sizes
+- **Dark/Light Mode** - Supports Dark/Light/System mode across all the pages
 
 ---
 

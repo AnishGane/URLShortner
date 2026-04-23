@@ -1,6 +1,5 @@
 import { supabase, supabaseUrl } from "@/db/supabase";
 import { generateQrFromText } from "@/lib/helper";
-// import { checkSafeBrowsing } from "@/lib/safe-browsing";
 import { checkUrlSafety, isValidUrl } from "@/lib/url-security";
 import { useMutation } from "@tanstack/react-query";
 import { nanoid } from "nanoid";

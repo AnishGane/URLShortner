@@ -5,8 +5,8 @@ import { useState } from "react"
 
 
 export function ModeToggle() {
-    const { setTheme } = useTheme()
-    const [themeActive, setThemeActive] = useState("light");
+    const { setTheme, theme } = useTheme()
+    const [themeActive, setThemeActive] = useState(theme);
 
     return (
         <div className="border border-border rounded-full px-1 py-0.5">
