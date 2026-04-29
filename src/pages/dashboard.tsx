@@ -33,7 +33,7 @@ const DashboardPage = () => {
 
     const filteredUrls = useMemo(() =>
         urls.filter((url: any) =>
-            (url.title || "").toLowerCase().includes(debounceValue.toLowerCase())
+            (url.title || "").trim().toLowerCase().includes(debounceValue.trim().toLowerCase())
         ),
         [urls, debounceValue]
     );
@@ -72,7 +72,7 @@ const DashboardPage = () => {
                 )}
             </div >
 
-            <div className="flex items-center justify-between mb-4 my-10" >
+            <div className="flex items-center justify-between mb-2 my-10" >
                 <h1 className="text-3xl font-semibold">My Links</h1>
                 <CreateLinkDialog />
             </div>
