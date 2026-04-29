@@ -46,26 +46,25 @@ const DashboardPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {loading ? (
                     <>
-                        <Skeleton className="animate-pulse h-28 rounded-lg" />
-                        <Skeleton className="animate-pulse h-28 rounded-lg" />
+                        <Skeleton className="animate-pulse h-20 md:h-24 rounded-lg" />
+                        <Skeleton className="animate-pulse h-20 md:h-24 rounded-lg" />
                     </>
                 ) : (
                     <>
                         <Card className="flex flex-row">
-                            <CardHeader className=" flex-1 rounded-none">
+                            <CardHeader className=" flex-1 rounded-none gap-2">
                                 <CardTitle className="font-normal">Total URLs Created</CardTitle>
                                 <Link className="text-muted-foreground/80 size-7" />
                             </CardHeader>
-                            <CardContent className="text-xl md:text-5xl font-medium flex items-center justify-center">{urls.length}
+                            <CardContent className="text-5xl font-medium flex items-center justify-center">{urls.length}
                             </CardContent>
                         </Card >
                         <Card className="flex flex-row">
-                            <CardHeader className=" flex-1 rounded-none">
-                                <CardTitle className="font-normal">Total Clicks
-                                    <MouseLeftIcon className="text-muted-foreground/80 size-7 mt-1" />
-                                </CardTitle>
+                            <CardHeader className=" flex-1 rounded-none gap-2">
+                                <CardTitle className="font-normal">Total Clicks</CardTitle>
+                                <MouseLeftIcon className="text-muted-foreground/80 size-7 mt-1" />
                             </CardHeader>
-                            <CardContent className="text-xl md:text-5xl font-medium flex items-center justify-center">
+                            <CardContent className="text-5xl font-medium flex items-center justify-center">
                                 {clicks.length}
                             </CardContent>
                         </Card>
@@ -73,8 +72,8 @@ const DashboardPage = () => {
                 )}
             </div >
 
-            <div className="flex items-center justify-between my-6" >
-                <h1 className="text-3xl font-medium">My Links</h1>
+            <div className="flex items-center justify-between mb-4 my-10" >
+                <h1 className="text-3xl font-semibold">My Links</h1>
                 <CreateLinkDialog />
             </div>
 
@@ -124,7 +123,7 @@ const DashboardPage = () => {
             {/* Rendering the links */}
             {urlsLoading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4">
-                    {[...Array(4)].map((_, i) => (
+                    {[...Array(6)].map((_, i) => (
                         <Skeleton key={i} className="h-44 bg-muted animate-pulse rounded-md" />
                     ))}
                 </div>

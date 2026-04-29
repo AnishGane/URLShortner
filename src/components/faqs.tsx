@@ -13,7 +13,7 @@ const Faqs = () => {
 
     return (
         <div className="py-4 sm:py-8">
-            <h2 className="text-xl md:text-3xl font-medium mb-8">FAQs <span className="text-primary text-sm font-normal">(Frequently Asked Questions)</span></h2>
+            <h2 className="text-2xl md:text-3xl font-medium mb-8">FAQs <span className="text-primary text-sm font-normal">(Frequently Asked Questions)</span></h2>
             <Accordion
                 className="w-full max-w-4xl mx-auto"
                 defaultValue={defaultFaq ? [defaultFaq.value] : []}

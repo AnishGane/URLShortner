@@ -51,7 +51,7 @@ const LinkCard = ({ url }: { url: any }) => {
                         <DropdownMenuContent>
                             <DropdownMenuItem
                                 onClick={copyShortUrl}
-                                className={"cursor-pointer rounded-sm"}>
+                                className={"cursor-pointer rounded-sm py-1.5"}>
                                 {!isCopied ?
                                     (
                                         <Copy />

@@ -151,7 +151,7 @@ export const EditLinkForm = ({ url, setOpen }: EditLinkFormProps) => {
                         Custom Url (optional)
                     </FieldLabel>
                     <div className="flex items-center gap-2">
-                        <Card className="p-2 rounded-sm line-clamp-1 text-ellipsis">
+                        <Card className="p-2 rounded-sm line-clamp-1 text-ellipsis text-nowrap">
                             {APP_URL || "http://localhost:5173"}
                         </Card>
                         /

@@ -27,7 +27,7 @@ const CreateLinkDialog = () => {
             }
         }}>
             <DialogTrigger>
-                <Button className={"p-4.5 cursor-pointer rounded-md"}>
+                <Button className={"py-4.5 cursor-pointer rounded-md"}>
                     <Plus />
                     Create Link
                 </Button>

@@ -19,11 +19,11 @@ import {
 const chartConfig = {
     desktop: {
         label: "Desktop",
-        color: "var(--chart-1)",
+        color: "var(--chart-2)",
     },
     mobile: {
         label: "Mobile",
-        color: "var(--chart-2)",
+        color: "var(--chart-3)",
     },
 } satisfies ChartConfig
 
@@ -37,7 +37,7 @@ const DevicePieChart = ({ stats }: { stats: any[] }) => {
     }, {})
 
     const devices = Object.entries(deviceCount).map(([device, count]) => ({
-        device, count
+        device, count, fill: chartConfig[device?.toLowerCase() as keyof typeof chartConfig].color || "var(--chart-1)"
     })).sort((a, b) => b.count - a.count)
 
     return (

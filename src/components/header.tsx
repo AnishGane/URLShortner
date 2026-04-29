@@ -35,7 +35,7 @@ const Header = () => {
         <header className="sticky top-0 border-b border-b-border/60 z-30 bg-background/20 backdrop-blur-2xl">
             <nav className="max-w-7xl mx-auto p-4 flex justify-between items-center">
                 <Link to={isAuthenticated ? "/dashboard" : "/"}>
-                    <h1 className="font-semibold text-2xl">URLShortner</h1>
+                    <h1 className="font-semibold text-2xl">SNiP.</h1>
                 </Link>
 
                 <div className="flex gap-2">
@@ -48,8 +48,9 @@ const Header = () => {
                                     behavior: "smooth"
                                 })
                             }}
+                                variant="ghost"
                                 className={"cursor-pointer px-4 py-4 rounded-md"}>Sign In</Button>
-                            <Button variant="outline" onClick={() => {
+                            <Button onClick={() => {
                                 navigate("/auth");
                                 window.scrollTo({
                                     top: 0,

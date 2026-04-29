@@ -91,7 +91,7 @@ const LinkPage = () => {
       </Button>
       <div className="flex flex-col mt-6 sm:flex-row gap-6 justify-between">
         <Card className="flex flex-col items-start gap-4 rounded-lg sm:w-2/5 h-fit">
-          <CardHeader className="w-full px-4 flex justify-between items-center">
+          <CardHeader className="w-full px-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <CardTitle className="text-xl md:text-2xl w-fit">
               {url?.title}
             </CardTitle>

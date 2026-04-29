@@ -6,8 +6,6 @@ import Faqs from "@/components/faqs"
 import { FeatureSection } from "@/components/feature197"
 import { features } from "@/constant/data"
 import { useTheme } from "@/components/theme-provider"
-import LPLight from "@/assets/LP1.png";
-import LPDark from "@/assets/LP2.png";
 import SVGLight from "@/assets/SVG1.svg";
 import SVGDark from "@/assets/SVG2.svg";
 
@@ -25,7 +23,7 @@ const LandingPage = () => {
 
     return (
         <section className="text-center px-4 md:px-0 pt-16 md:pt-30 z-40">
-            <h1 className="text-4xl md:text-[6rem] font-semibold">The Only URL Shortner You'll ever Need.</h1>
+            <h1 className="text-4xl md:text-[6rem] font-semibold leading-10 md:leading-24">The Only URL Shortner You'll ever Need.</h1>
 
             <div className="flex flex-col sm:flex-row justify-center mt-8 md:mt-16 relative">
                 <img src={theme === "light" ? SVGDark : SVGLight} alt="Landing page svg image" className="size-28 absolute left-50 -bottom-6 -rotate-32 hidden sm:block select-none pointer-events-none" />
@@ -41,7 +39,7 @@ const LandingPage = () => {
             </div>
 
             <div className="p-2 rounded-xl bg-foreground/10 shadow-[5px_10px_10px_10px_var(--foreground/20)_inset] mask-b-from-60% sm:mask-b-from-70% my-8 md:my-16">
-                <img src={theme === "light" ? LPLight : LPDark} alt="Landing page image" className="w-full rounded-lg object-cover object-top select-none pointer-events-none" />
+                <img src={theme === "light" ? "/images/LandingPageLight.png" : "/images/LandingPageDark.png"} alt="Landing page image" className="w-full rounded-lg object-cover object-top select-none pointer-events-none" />
             </div>
 
             <FeatureSection features={features} />

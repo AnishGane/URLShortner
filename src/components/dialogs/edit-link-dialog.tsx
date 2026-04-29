@@ -29,7 +29,7 @@ const EditLinkDialog = ({ id }: { id: string }) => {
     return (
         <>
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger className={"flex items-center px-1.5 hover:bg-muted w-full py-0.5 rounded-sm gap-1.5 cursor-pointer text-[14.5px]"}>
+                <DialogTrigger className={"flex items-center px-1.5 hover:bg-muted w-full py-1.5 rounded-sm gap-1.5 cursor-pointer text-[14.5px]"}>
                     <Pencil className="size-4" />
                     Edit Link
                 </DialogTrigger>

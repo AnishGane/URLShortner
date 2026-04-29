@@ -105,12 +105,4 @@ export const shareLink = async (link: string) => {
       // User cancelled or share failed—fall through to clipboard
     }
   }
-
-  // // Fallback → copy to clipboard
-  // const success = await copyToClipboard(link);
-  // if (success) {
-  //   alert("Link copied to clipboard");
-  // } else {
-  //   alert("Failed to copy link");
-  // }
 };

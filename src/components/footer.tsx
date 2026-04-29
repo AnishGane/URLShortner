@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Boxes, Link as LinkIcon } from "lucide-react";
+import { Boxes } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -22,9 +22,9 @@ export default function Footer() {
             <div className="max-w-7xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-3">
                 {/* Brand Section */}
                 <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-xl font-semibold">
-                        <LinkIcon className="size-5" />
-                        URL Shortener
+                    <div className="flex items-center gap-1.5 text-xl font-semibold">
+                        <img src="/favicon.svg" className="size-7" alt="" />
+                        SNiP.
                     </div>
                     <p className="text-sm text-muted-foreground">
                         Simplify your links. Share smarter. <br /> Track better.
@@ -69,7 +69,7 @@ export default function Footer() {
 
             {/* Bottom Section */}
             <div className="text-center py-6 text-sm text-muted-foreground">
-                © {new Date().getFullYear()} URL Shortener. Made with ❤️
+                © {new Date().getFullYear()} SNiP. Made with ❤️
             </div>
         </footer>
     );
