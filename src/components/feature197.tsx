@@ -37,7 +37,7 @@ const FeatureSection = ({
   return (
     <section className={cn("py-8 sm:py-16", className)}>
       <div className="container mx-auto">
-        <h2 className="text-2xl md:text-3xl font-medium mb-8 sm:mb-12">Features</h2>
+        <h2 className="text-2xl md:text-3xl text-center font-medium mb-8 sm:mb-12">Features</h2>
         <div className="flex w-full items-start justify-between gap-12">
           <div className="w-full md:w-1/2">
             <Accordion

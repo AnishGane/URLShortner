@@ -157,12 +157,12 @@ const SignupForm = () => {
         <Button disabled={loading || oAuthLoading !== null} type="submit" className={"w-full py-5.5 cursor-pointer"} form="form-rhf-signup">
           {loading ? (
             <>
-              <Loader2 className="animate-spin size-5 mr-2" />
-              Signing...
+              <Loader2 className="animate-spin size-5 mr-1" />
+              Creating...
             </>
           ) : (
             <span>
-              Sign up
+              Create an account
             </span>
           )}
         </Button>

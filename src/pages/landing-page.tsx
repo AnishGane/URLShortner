@@ -22,8 +22,13 @@ const LandingPage = () => {
     }
 
     return (
-        <section className="text-center px-4 md:px-0 pt-16 md:pt-30 z-40">
-            <h1 className="text-4xl md:text-[6rem] font-semibold leading-10 md:leading-24">The Only URL Shortner You'll ever Need.</h1>
+        <section className="px-4 md:px-0 pt-16 md:pt-30 z-40">
+            <div className="text-center relative">
+                <a target="_blank" href={"https://www.github.com/AnishGane"} className="text-right! font-light underline absolute right-25 -top-4 ">
+                    By AnishGane
+                </a>
+                <h1 className="text-4xl md:text-[6rem] font-semibold leading-10 md:leading-24">The Only URL Shortner You'll ever Need.</h1>
+            </div>
 
             <div className="flex flex-col sm:flex-row justify-center mt-8 md:mt-16 relative">
                 <img src={theme === "light" ? SVGDark : SVGLight} alt="Landing page svg image" className="size-28 absolute left-50 -bottom-6 -rotate-32 hidden sm:block select-none pointer-events-none" />
