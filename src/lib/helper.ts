@@ -1,6 +1,8 @@
 import { supabase } from "@/db/supabase";
 import { UAParser } from "ua-parser-js";
 import QRCode from "qrcode";
+import type { User } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 const parser = new UAParser();
 
@@ -104,5 +106,75 @@ export const shareLink = async (link: string) => {
     } catch (error) {
       // User cancelled or share failed—fall through to clipboard
     }
+  }
+};
+
+// To get the user avatar from google and github oAuth
+export function extractOAuthProfile(user: User) {
+  const meta = user?.user_metadata;
+  if (!meta) {
+    return {
+      name: "User",
+      profile_pic: null,
+    };
+  }
+
+  return {
+    name: meta.full_name || meta.name || meta.user_name || "User",
+    profile_pic: meta.avatar_url || null,
+  };
+}
+
+// helper to handle the oauth profile
+export const handleOAuthProfile = async (user: User) => {
+  const provider = user.app_metadata?.provider;
+
+  // Ignore email/password users
+  if (!provider || provider === "email") return;
+
+  const { data: existing } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!existing) {
+    const { name, profile_pic } = extractOAuthProfile(user);
+
+    const { error } = await supabase
+      .from("profiles")
+      .insert([{ id: user.id, name, profile_pic }]);
+
+    if (error) {
+      console.error("Profile insert error:", error.message);
+    }
+  }
+};
+
+export const handleOAuthLogin = async (
+  provider: "google" | "github",
+  deps: {
+    setOAuthLoading: (p: "google" | "github" | null) => void;
+    signInWithGoogle: () => Promise<void>;
+    signInWithGithub: () => Promise<void>;
+  },
+) => {
+  const { setOAuthLoading, signInWithGoogle, signInWithGithub } = deps;
+
+  try {
+    setOAuthLoading(provider);
+
+    if (provider === "google") {
+      await signInWithGoogle();
+    } else {
+      await signInWithGithub();
+    }
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : `Failed to sign in with ${provider}`;
+    toast.error(message);
+    setOAuthLoading(null);
   }
 };

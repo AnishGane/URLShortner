@@ -101,7 +101,7 @@ const DashboardPage = () => {
             </div >
 
             {urlsLoading ? (
-                <Skeleton className="animate-pulse h-12" />
+                <Skeleton className="animate-pulse h-10 w-44" />
             ) : (
                 <div className="my-2 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2">

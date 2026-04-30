@@ -13,13 +13,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Loader2, LogOut } from "lucide-react";
 import { useAuthContext } from "@/context/auth-context";
 import { toast } from "sonner";
-import { getDisplayNameFromEmail } from "@/lib/helper";
+import { extractOAuthProfile, getDisplayNameFromEmail } from "@/lib/helper";
 import { ModeToggle } from "./mode-toggle";
 
 const Header = () => {
     const navigate = useNavigate();
-    const { user, logoutUser, loading, isAuthenticated } = useAuthContext();
+    const { user, logoutUser, logoutLoading, isAuthenticated } = useAuthContext();
     const email = user?.email;
+    const { name, profile_pic } = extractOAuthProfile(user);
 
     const handleLogout = async () => {
         try {
@@ -65,25 +66,16 @@ const Header = () => {
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
                                     <Avatar className={"size-8"}>
-                                        {user?.user_metadata?.profile_pic ? (
-                                            <>
-                                                <AvatarImage loading="lazy" src={`${user?.user_metadata?.profile_pic}?width=64&height=64&resize=cover`}
-                                                    sizes="32px"
-                                                />
-                                                <AvatarFallback>URL</AvatarFallback>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <AvatarImage loading="lazy" src="https://github.com/shadcn.png?s=64"
-                                                    sizes="32px" />
-                                                <AvatarFallback>CN</AvatarFallback>
-                                            </>
-                                        )}
+                                        <>
+                                            <AvatarImage loading="lazy" src={profile_pic ? profile_pic : "https://github.com/shadcn.png?s=64"}
+                                                sizes="32px" />
+                                            <AvatarFallback>CN</AvatarFallback>
+                                        </>
                                     </Avatar>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className={"mt-1"}>
                                     <DropdownMenuGroup>
-                                        <DropdownMenuLabel>{user?.user_metadata?.name || (email ? getDisplayNameFromEmail(email) : "User")}</DropdownMenuLabel>
+                                        <DropdownMenuLabel>{name || user?.user_metadata?.name || (email ? getDisplayNameFromEmail(email) : "User")}</DropdownMenuLabel>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onSelect={(e) =>
@@ -91,7 +83,7 @@ const Header = () => {
                                             }
                                             onClick={handleLogout}
                                             variant="destructive" className={"p-1.5 rounded-sm cursor-pointer"}>
-                                            {loading ? (
+                                            {logoutLoading ? (
                                                 <>
                                                     <Loader2 className="animate-spin" />
                                                     <span className="line-clamp-1">Logging out...</span>
