@@ -132,22 +132,23 @@ export const handleOAuthProfile = async (user: User) => {
   // Ignore email/password users
   if (!provider || provider === "email") return;
 
-  const { data: existing } = await supabase
-    .from("profiles")
-    .select("id")
-    .eq("id", user.id)
-    .maybeSingle();
+  const { name, profile_pic } = extractOAuthProfile(user);
 
-  if (!existing) {
-    const { name, profile_pic } = extractOAuthProfile(user);
+  const { error } = await supabase.from("profiles").upsert(
+    [
+      {
+        id: user.id,
+        name,
+        profile_pic,
+      },
+    ],
+    {
+      onConflict: "id",
+    },
+  );
 
-    const { error } = await supabase
-      .from("profiles")
-      .insert([{ id: user.id, name, profile_pic }]);
-
-    if (error) {
-      console.error("Profile insert error:", error.message);
-    }
+  if (error) {
+    console.error("Profile insert error:", error.message);
   }
 };
 

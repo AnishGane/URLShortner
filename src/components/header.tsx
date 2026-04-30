@@ -21,6 +21,7 @@ const Header = () => {
     const { user, logoutUser, logoutLoading, isAuthenticated } = useAuthContext();
     const email = user?.email;
     const { name, profile_pic } = extractOAuthProfile(user);
+    const resolvedProfilePic = profile_pic || user?.user_metadata?.profile_pic || "https://github.com/shadcn.png?s=64";
 
     const handleLogout = async () => {
         try {
@@ -67,7 +68,7 @@ const Header = () => {
                                 <DropdownMenuTrigger>
                                     <Avatar className={"size-8"}>
                                         <>
-                                            <AvatarImage loading="lazy" src={profile_pic ? profile_pic : "https://github.com/shadcn.png?s=64"}
+                                            <AvatarImage loading="lazy" src={resolvedProfilePic}
                                                 sizes="32px" />
                                             <AvatarFallback>CN</AvatarFallback>
                                         </>
