@@ -1,4 +1,5 @@
 import { supabase, supabaseUrl } from "@/db/supabase";
+import { handleOAuthProfile } from "@/lib/helper";
 import type { Session, User } from "@supabase/supabase-js";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -10,8 +11,18 @@ type AuthContextType = {
     loginUser: (email: string, password: string) => Promise<void>,
     logoutUser: () => Promise<void>
     isAuthenticated: boolean
-    signupUser: (email: string, password: string, name: string, profile_pic: File) => Promise<{ user: User | null; session: Session | null }>
-    // { user: User | null; session: Session | null } -> destructuring the AuthResponse from supabase
+    signupUser: (
+        email: string,
+        password: string,
+        name: string,
+        profile_pic?: File
+    ) => Promise<void>;
+    signInWithGoogle: () => Promise<void>
+    signInWithGithub: () => Promise<void>
+    oAuthLoading: "google" | "github" | null
+    setOAuthLoading: React.Dispatch<React.SetStateAction<"google" | "github" | null>>
+    logoutLoading: boolean
+    setLogoutLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -20,11 +31,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
+    const [oAuthLoading, setOAuthLoading] = useState<"google" | "github" | null>(null);
+    const [logoutLoading, setLogoutLoading] = useState(false);
     const isAuthenticated = !!user;
 
     // Get initial session + listen to changes
     useEffect(() => {
-        const getSession = async () => {
+        const init = async () => {
             try {
                 const { data, error } = await supabase.auth.getSession();
                 if (error) {
@@ -37,11 +50,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setLoading(false);
             }
         }
-        getSession();
+        init();
 
         const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
             setUser(session?.user ?? null);
+
+            // Auto create profile for OAuth users
+            if (session?.user) {
+                handleOAuthProfile(session.user);
+            }
         });
 
         return () => {
@@ -49,7 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         };
     }, []);
 
-    // Login
+    // Email Login
     const loginUser = async (email: string, password: string) => {
         if (!email || !password) {
             throw new Error("Missing email or password");
@@ -65,61 +83,88 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
     };
 
-    // Logout
-    const logoutUser = async () => {
+    // Signup
+    const signupUser = async (email: string, password: string, name: string, profile_pic?: File) => {
         setLoading(true);
-        try {
-            const { error } = await supabase.auth.signOut();
-            if (error) {
+
+        let profilePicUrl = null;
+
+        if (profile_pic) {
+            const fileExt = profile_pic.name.split('.').pop();
+            const fileName = `dp-${name.split(" ").join("-")}-${Date.now()}.${fileExt}`;
+            const { error: storageError } = await supabase.storage.from("profile_pic").upload(fileName, profile_pic);
+            if (storageError) {
                 setLoading(false);
-                throw new Error(error.message);
+                throw new Error(storageError.message);
             }
-        } catch (error) {
-            console.error("Error in logoutUser:", error instanceof Error ? error.message : error);
-        } finally {
-            setUser(null);
-            setSession(null);
-            setLoading(false);
-        }
-    }
 
-    const signupUser = async (email: string, password: string, name: string, profile_pic: File) => {
-        setLoading(true);
-        const fileExt = profile_pic.name.split('.').pop();
-        const fileName = `dp-${name.split(" ").join("-")}-${Date.now()}.${fileExt}`;
-        const { error: storageError } = await supabase.storage.from("profile_pic").upload(fileName, profile_pic);
-        if (storageError) {
-            setLoading(false);
-            throw new Error(storageError.message);
+            profilePicUrl = `${supabaseUrl}/storage/v1/object/public/profile_pic/${fileName}`;
         }
 
-        const { data, error } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({
             email,
             password,
             options: {
                 data: {
                     name,
-                    profile_pic: `${supabaseUrl}/storage/v1/object/public/profile_pic/${fileName}`,
-                }
+                    profile_pic: profilePicUrl,
+                },
+            },
+        });
+
+        setLoading(false);
+        if (error) {
+            throw new Error(error.message ?? "Something went wrong while signup");
+        }
+    }
+
+    // OAUTH
+    const signInWithGoogle = async () => {
+        setOAuthLoading("google");
+
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback${window.location.search || ''}`,
             }
         })
 
-        if (!data) {
-            setLoading(false);
-            throw new Error("Signup failed");
-        } if (error) {
-            setLoading(false);
-            throw new Error(error.message ?? "Something went wrong while signup");
+        if (error) {
+            setOAuthLoading(null);
+            throw new Error(error.message);
         }
+    };
 
-        setLoading(false);
+    const signInWithGithub = async () => {
+        setOAuthLoading("github");
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: "github",
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback${window.location.search || ''}`,
+            },
+        });
 
-        return data;
+        if (error) {
+            setOAuthLoading(null);
+            throw new Error(error.message);
+        }
+    };
+
+    // Logout
+    const logoutUser = async () => {
+        setLogoutLoading(true);
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                throw new Error(error.message);
+            }
+        } finally {
+            setLogoutLoading(false);
+        }
     }
-
     return (
         <AuthContext.Provider value={{
-            user, loading, setLoading, session, logoutUser, loginUser, isAuthenticated, signupUser
+            user, loading, setLoading, session, logoutUser, loginUser, isAuthenticated, signupUser, signInWithGithub, signInWithGoogle, oAuthLoading, setOAuthLoading, logoutLoading, setLogoutLoading
         }}>
             {children}
         </AuthContext.Provider>

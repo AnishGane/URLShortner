@@ -17,9 +17,10 @@ import { toast } from "sonner";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
+import { handleOAuthLogin } from "@/lib/helper";
 
 const SignupForm = () => {
-  const { loading, signupUser } = useAuthContext();
+  const { loading, signupUser, oAuthLoading, setOAuthLoading, signInWithGithub, signInWithGoogle } = useAuthContext();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const longLink = searchParams.get("createNew");
@@ -152,8 +153,8 @@ const SignupForm = () => {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter>
-        <Button disabled={loading} type="submit" className={"w-full py-5.5 cursor-pointer"} form="form-rhf-signup">
+      <CardFooter className="flex flex-col gap-4">
+        <Button disabled={loading || oAuthLoading !== null} type="submit" className={"w-full py-5.5 cursor-pointer"} form="form-rhf-signup">
           {loading ? (
             <>
               <Loader2 className="animate-spin size-5 mr-2" />
@@ -165,6 +166,33 @@ const SignupForm = () => {
             </span>
           )}
         </Button>
+
+        <div className="flex flex-row gap-2 w-full items-center justify-center">
+          <Button
+            disabled={oAuthLoading !== null || loading}
+            className={"flex-1 py-4.5 gap-2 cursor-pointer"}
+            type="button" variant="outline"
+            onClick={() => handleOAuthLogin("google", {
+              setOAuthLoading,
+              signInWithGoogle,
+              signInWithGithub,
+            })}>
+            <img src="https://files.svgcdn.io/material-icon-theme/google.svg" className="size-5" alt="google icon" />
+            {oAuthLoading === "google" ? "Redirecting..." : "Continue with Google"}
+          </Button>
+          <Button
+            disabled={oAuthLoading !== null || loading}
+            className={"flex-1 py-4.5 gap-2 cursor-pointer"}
+            type="button" variant="outline"
+            onClick={() => handleOAuthLogin("github", {
+              setOAuthLoading,
+              signInWithGoogle,
+              signInWithGithub
+            })}>
+            <img src="https://files.svgcdn.io/zmdi/github.svg" alt="github icon" className="size-5" />
+            {oAuthLoading === "github" ? "Redirecting..." : "Continue with Github"}
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   )

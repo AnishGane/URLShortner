@@ -23,6 +23,7 @@
 - **URL Shortening** — Instantly shorten any valid URL
 - **Custom Slugs** — Choose your own short URL alias
 - **User Authentication** — Secure sign-up/login; each user manages their own links
+- **OAuth(Google and Github) support** - User can login and signup using goole & github
 - **Link Dashboard** — View, edit, and delete all your shortened URLs in one place
 - **Live Preview** — Real-time preview of the shortened URL as you type
 - **Form Validation** — Schema-driven validation with Zod and React Hook Form

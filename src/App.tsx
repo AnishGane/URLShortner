@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/protected-route"
 import PublicRoute from "./components/public-route"
 import DashboardPage from "./pages/dashboard"
 import WarningPage from "./pages/warning-page"
+import AuthCallback from "./pages/auth-callback"
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,9 @@ const router = createBrowserRouter([
         element: (
           <WarningPage />
         )
+      },{
+        path: "/auth/callback",
+        element: <AuthCallback />
       }
     ]
   }
