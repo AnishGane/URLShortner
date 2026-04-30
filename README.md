@@ -13,7 +13,7 @@
 **Live Demo:** [https://urlshortner-lzyy.onrender.com/](https://urlshortner-lzyy.onrender.com/)
 
 <p align="center">
-  <img src="src/assets/image.png" alt="Snip URL Shortener Banner" width="600" />
+  <img src="/public/images/LandingPageDark.png" alt="Snip URL Shortener Banner" width="600" />
 </p>
 
 ---
@@ -23,7 +23,7 @@
 - **URL Shortening** — Instantly shorten any valid URL
 - **Custom Slugs** — Choose your own short URL alias
 - **User Authentication** — Secure sign-up/login; each user manages their own links
-- **OAuth(Google and Github) support** - User can login and signup using goole & github
+- **OAuth (Google and GitHub) support** — Users can log in and sign up using Google or GitHub
 - **Link Dashboard** — View, edit, and delete all your shortened URLs in one place
 - **Live Preview** — Real-time preview of the shortened URL as you type
 - **Form Validation** — Schema-driven validation with Zod and React Hook Form

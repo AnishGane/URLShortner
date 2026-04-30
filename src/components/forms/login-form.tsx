@@ -20,10 +20,10 @@ import {
     InputGroupInput,
 } from "@/components/ui/input-group"
 import { useState } from "react";
-import { handleOAuthLogin } from "@/lib/helper";
+import OAuthButtons from "../oauth-buttons";
 
 const LoginForm = () => {
-    const { loginUser, loading, oAuthLoading, setOAuthLoading, signInWithGithub, signInWithGoogle } = useAuthContext();
+    const { loginUser, loading, oAuthLoading } = useAuthContext();
     const navigate = useNavigate();
     let [searchParams] = useSearchParams();
     const longLink = searchParams.get("createNew");
@@ -126,32 +126,8 @@ const LoginForm = () => {
                     )}
                 </Button>
 
-                <div className="flex flex-row gap-2 w-full items-center justify-center">
-                    <Button
-                        disabled={oAuthLoading !== null || loading}
-                        className={"flex-1 py-4.5 gap-2 cursor-pointer"}
-                        type="button" variant="outline"
-                        onClick={() => handleOAuthLogin("google", {
-                            setOAuthLoading,
-                            signInWithGoogle,
-                            signInWithGithub,
-                        })}>
-                        <img src="https://files.svgcdn.io/material-icon-theme/google.svg" className="size-5" alt="google icon" />
-                        {oAuthLoading === "google" ? "Redirecting..." : "Continue with Google"}
-                    </Button>
-                    <Button
-                        disabled={oAuthLoading !== null || loading}
-                        className={"flex-1 py-4.5 gap-2 cursor-pointer"}
-                        type="button" variant="outline"
-                        onClick={() => handleOAuthLogin("github", {
-                            setOAuthLoading,
-                            signInWithGoogle,
-                            signInWithGithub,
-                        })}>
-                        <img src="https://files.svgcdn.io/zmdi/github.svg" alt="github icon" className="size-5" />
-                        {oAuthLoading === "github" ? "Redirecting..." : "Continue with Github"}
-                    </Button>
-                </div>
+                {/* Google and github buttons */}
+                <OAuthButtons />
             </CardFooter>
         </Card>
     )
