@@ -20,7 +20,7 @@ const Header = () => {
     const navigate = useNavigate();
     const { user, logoutUser, logoutLoading, isAuthenticated } = useAuthContext();
     const email = user?.email;
-    const { name, profile_pic } = extractOAuthProfile(user);
+    const { name, profile_pic } = user ? extractOAuthProfile(user) : { name: "User", profile_pic: null };
     const resolvedProfilePic = profile_pic || user?.user_metadata?.profile_pic || "https://github.com/shadcn.png?s=64";
 
     const handleLogout = async () => {
