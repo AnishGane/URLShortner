@@ -4,7 +4,7 @@ import QRCode from "qrcode";
 import type { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import type { Action } from "@/types";
-import { format } from "date-fns/format";
+import { format } from "date-fns";
 
 const parser = new UAParser();
 

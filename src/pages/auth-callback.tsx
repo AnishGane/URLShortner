@@ -18,9 +18,13 @@ const AuthCallback = () => {
             const createNew = localStorage.getItem("createNew");
             localStorage.removeItem("createNew");
 
+            const searchParams = createNew
+            ? `?createNew=${encodeURIComponent(createNew)}`
+            : "";
+
             navigate(
                 createNew
-                    ? `/dashboard?createNew=${createNew}`
+                    ? `/dashboard${searchParams}`
                     : "/dashboard",
                 { replace: true }
             );

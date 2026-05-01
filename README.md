@@ -87,6 +87,7 @@ snip/
 │   ├── layouts/
 │   │   └── app-layout.tsx   # Whole app layout
 │   ├── skeletons/           # All Skeletons for loading states
+│   ├── types/               # All types used in the project
 │   ├── lib/
 │   │   └── helper.ts   # Helpful reusable helper function
 │   │   └── utils.ts
