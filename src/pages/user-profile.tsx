@@ -120,7 +120,7 @@ const UserProfile = () => {
 
                 {/* Delete Action */}
                 <div className="sm:mt-10">
-                    <Card className="px-0 sm:px-2 py-5 sm:py-6">
+                    <Card className="px-0 sm:px-2 py-5 sm:py-6 ring ring-destructive/30">
                         <CardContent>
                             <div>
                                 <div className="mb-4">
