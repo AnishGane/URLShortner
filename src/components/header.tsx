@@ -5,7 +5,6 @@ import {
     DropdownMenuContent,
     DropdownMenuGroup,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -13,14 +12,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Loader2, LogOut } from "lucide-react";
 import { useAuthContext } from "@/context/auth-context";
 import { toast } from "sonner";
-import { extractOAuthProfile, getDisplayNameFromEmail } from "@/lib/helper";
+import { extractOAuthProfile } from "@/lib/helper";
 import { ModeToggle } from "./mode-toggle";
 
 const Header = () => {
     const navigate = useNavigate();
     const { user, logoutUser, logoutLoading, isAuthenticated } = useAuthContext();
-    const email = user?.email;
-    const { name, profile_pic } = user ? extractOAuthProfile(user) : { name: "User", profile_pic: null };
+    const { profile_pic } = user ? extractOAuthProfile(user) : { profile_pic: null };
     const resolvedProfilePic = profile_pic || user?.user_metadata?.profile_pic || "https://github.com/shadcn.png?s=64";
 
     const handleLogout = async () => {
@@ -76,7 +74,11 @@ const Header = () => {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className={"mt-1"}>
                                     <DropdownMenuGroup>
-                                        <DropdownMenuLabel>{name || user?.user_metadata?.name || (email ? getDisplayNameFromEmail(email) : "User")}</DropdownMenuLabel>
+                                        <DropdownMenuItem>
+                                            <Link to="/me" className="flex items-center gap-2 p-1">
+                                                <span>My Profile</span>
+                                            </Link>
+                                        </DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onSelect={(e) =>

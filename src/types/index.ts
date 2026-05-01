@@ -59,3 +59,13 @@ export type Feature = {
   image: string;
   description: string;
 };
+
+type ProfileItem = {
+    label: string;
+    value: string;
+}
+
+export type ProfileSection = {
+    label: string;
+    values: ProfileItem[];
+}
