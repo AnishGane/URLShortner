@@ -3,6 +3,7 @@ import { UAParser } from "ua-parser-js";
 import QRCode from "qrcode";
 import type { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import type { Action } from "@/types";
 
 const parser = new UAParser();
 
@@ -155,15 +156,15 @@ export const handleOAuthProfile = async (user: User) => {
 export const handleOAuthLogin = async (
   provider: "google" | "github",
   deps: {
-    setOAuthLoading: (p: "google" | "github" | null) => void;
+    dispatch: React.Dispatch<Action>;
     signInWithGoogle: () => Promise<void>;
     signInWithGithub: () => Promise<void>;
   },
 ) => {
-  const { setOAuthLoading, signInWithGoogle, signInWithGithub } = deps;
+  const { dispatch, signInWithGoogle, signInWithGithub } = deps;
 
   try {
-    setOAuthLoading(provider);
+    dispatch({ type: "SET_OAUTH_LOADING", payload: provider });
 
     if (provider === "google") {
       await signInWithGoogle();
@@ -176,6 +177,7 @@ export const handleOAuthLogin = async (
         ? error.message
         : `Failed to sign in with ${provider}`;
     toast.error(message);
-    setOAuthLoading(null);
+
+    dispatch({ type: "SET_OAUTH_LOADING", payload: null });
   }
 };

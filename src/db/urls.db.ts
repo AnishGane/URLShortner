@@ -4,7 +4,8 @@ export const getUrls = async (userId: string) => {
   const { data, error } = await supabase
     .from("urls")
     .select("*")
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
   if (error) {
     console.error(error.message);
     throw new Error("Unable to load URLs");

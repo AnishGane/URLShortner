@@ -9,21 +9,9 @@ import { toast } from "sonner"
 import { useAuthContext } from "@/context/auth-context"
 import { useEditUrl } from "@/hooks/useEditUrl"
 import { useEffect } from "react"
+import type { EditLinkFormProps } from "@/types"
 
 const APP_URL = import.meta.env.VITE_APP_URL;
-
-interface EditLinkFormProps {
-    url: URL,
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-type URL = {
-    id: string;
-    title: string;
-    original_url: string;
-    custom_url: string;
-    short_url: string;
-}
 
 export const EditLinkForm = ({ url, setOpen }: EditLinkFormProps) => {
     const { user } = useAuthContext();

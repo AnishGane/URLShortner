@@ -1,39 +1,51 @@
 import { supabase, supabaseUrl } from "@/db/supabase";
 import { handleOAuthProfile } from "@/lib/helper";
-import type { Session, User } from "@supabase/supabase-js";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import type { Action, AuthContextType, State } from "@/types";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 
-type AuthContextType = {
-    user: User | null,
-    session: Session | null,
-    loading: boolean,
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    loginUser: (email: string, password: string) => Promise<void>,
-    logoutUser: () => Promise<void>
-    isAuthenticated: boolean
-    signupUser: (
-        email: string,
-        password: string,
-        name: string,
-        profile_pic?: File
-    ) => Promise<void>;
-    signInWithGoogle: () => Promise<void>
-    signInWithGithub: () => Promise<void>
-    oAuthLoading: "google" | "github" | null
-    setOAuthLoading: React.Dispatch<React.SetStateAction<"google" | "github" | null>>
-    logoutLoading: boolean
-    setLogoutLoading: React.Dispatch<React.SetStateAction<boolean>>
+// Reducer
+const initialState: State = {
+    user: null,
+    session: null,
+    loading: true,
+    oAuthLoading: null,
+    logoutLoading: false
+}
+
+const authReducer = (state: State, action: Action): State => {
+    switch (action.type) {
+        case "SET_SESSION":
+            return {
+                ...state,
+                session: action.payload,
+                user: action.payload?.user ?? null
+            };
+        case "SET_LOADING":
+            return {
+                ...state,
+                loading: action.payload
+            };
+        case "SET_OAUTH_LOADING":
+            return {
+                ...state,
+                oAuthLoading: action.payload
+            };
+        case "SET_LOGOUT_LOADING":
+            return {
+                ...state,
+                logoutLoading: action.payload
+            };
+        default:
+            return state
+    }
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [session, setSession] = useState<Session | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [oAuthLoading, setOAuthLoading] = useState<"google" | "github" | null>(null);
-    const [logoutLoading, setLogoutLoading] = useState(false);
-    const isAuthenticated = !!user;
+
+    const [state, dispatch] = useReducer(authReducer, initialState);
+    const isAuthenticated = !!state.user;
 
     // Get initial session + listen to changes
     useEffect(() => {
@@ -43,22 +55,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 if (error) {
                     console.error("Failed to get session:", error.message);
                 } else {
-                    setSession(data.session);
-                    setUser(data.session?.user ?? null);
+                    dispatch({ type: "SET_SESSION", payload: data.session });
                 }
             } finally {
-                setLoading(false);
+                dispatch({ type: "SET_LOADING", payload: false });
             }
         }
         init();
 
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-            setUser(session?.user ?? null);
+        const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+            dispatch({ type: "SET_SESSION", payload: session });
 
             // Auto create profile for OAuth users
             if (session?.user) {
-                handleOAuthProfile(session.user);
+                await handleOAuthProfile(session.user);
             }
         });
 
@@ -73,28 +83,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             throw new Error("Missing email or password");
         }
 
-        setLoading(true);
+        dispatch({ type: "SET_LOADING", payload: true });
+
         const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+        dispatch({ type: "SET_LOADING", payload: false });
+
         if (error) {
-            setLoading(false);
             throw new Error(error.message);
         }
-
-        setLoading(false);
     };
 
     // Signup
     const signupUser = async (email: string, password: string, name: string, profile_pic?: File) => {
-        setLoading(true);
 
-        let profilePicUrl = null;
+        dispatch({ type: "SET_LOADING", payload: true });
+
+        let profilePicUrl: string | null = null;
 
         if (profile_pic) {
             const fileExt = profile_pic.name.split('.').pop();
             const fileName = `dp-${name.split(" ").join("-")}-${Date.now()}.${fileExt}`;
-            const { error: storageError } = await supabase.storage.from("profile_pic").upload(fileName, profile_pic);
+
+            const { error: storageError } = await supabase.storage
+                .from("profile_pic")
+                .upload(fileName, profile_pic);
+
             if (storageError) {
-                setLoading(false);
+                dispatch({ type: "SET_LOADING", payload: false });
                 throw new Error(storageError.message);
             }
 
@@ -112,7 +128,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             },
         });
 
-        setLoading(false);
+        dispatch({ type: "SET_LOADING", payload: false });
+
         if (error) {
             throw new Error(error.message ?? "Something went wrong while signup");
         }
@@ -120,7 +137,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // OAUTH
     const signInWithGoogle = async () => {
-        setOAuthLoading("google");
+
+        dispatch({ type: "SET_OAUTH_LOADING", payload: "google" });
 
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
@@ -130,13 +148,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         })
 
         if (error) {
-            setOAuthLoading(null);
+            dispatch({ type: "SET_OAUTH_LOADING", payload: null });
             throw new Error(error.message);
         }
     };
 
     const signInWithGithub = async () => {
-        setOAuthLoading("github");
+
+        dispatch({ type: "SET_OAUTH_LOADING", payload: "github" });
+
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "github",
             options: {
@@ -145,26 +165,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         if (error) {
-            setOAuthLoading(null);
+            dispatch({ type: "SET_OAUTH_LOADING", payload: null });
             throw new Error(error.message);
         }
     };
 
     // Logout
     const logoutUser = async () => {
-        setLogoutLoading(true);
+
+        dispatch({ type: "SET_LOGOUT_LOADING", payload: true });
+
         try {
             const { error } = await supabase.auth.signOut();
             if (error) {
                 throw new Error(error.message);
             }
         } finally {
-            setLogoutLoading(false);
+            dispatch({ type: "SET_LOGOUT_LOADING", payload: false });
         }
     }
+
     return (
         <AuthContext.Provider value={{
-            user, loading, setLoading, session, logoutUser, loginUser, isAuthenticated, signupUser, signInWithGithub, signInWithGoogle, oAuthLoading, setOAuthLoading, logoutLoading, setLogoutLoading
+            user: state.user,
+            loading: state.loading,
+            session: state.session,
+            logoutUser,
+            loginUser,
+            isAuthenticated,
+            signupUser,
+            signInWithGithub,
+            signInWithGoogle,
+            oAuthLoading: state.oAuthLoading,
+            logoutLoading: state.logoutLoading,
+            dispatch
+
         }}>
             {children}
         </AuthContext.Provider>

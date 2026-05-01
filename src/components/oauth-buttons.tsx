@@ -5,7 +5,7 @@ import { Google } from "@/assets/icons/google";
 import { Github } from "@/assets/icons/github";
 
 const OAuthButtons = () => {
-    const { loading, oAuthLoading, setOAuthLoading, signInWithGithub, signInWithGoogle } = useAuthContext();
+    const { loading, oAuthLoading, dispatch, signInWithGithub, signInWithGoogle } = useAuthContext();
     return (
         <div className="flex flex-col sm:flex-row gap-2 w-full items-center justify-center">
             <Button
@@ -13,7 +13,7 @@ const OAuthButtons = () => {
                 className={" w-full sm:flex-1 py-6 sm:py-5 gap-2 cursor-pointer"}
                 type="button" variant="outline"
                 onClick={() => handleOAuthLogin("google", {
-                    setOAuthLoading,
+                    dispatch,
                     signInWithGoogle,
                     signInWithGithub,
                 })}>
@@ -25,7 +25,7 @@ const OAuthButtons = () => {
                 className={"w-full sm:flex-1 py-6 sm:py-5 gap-2 cursor-pointer"}
                 type="button" variant="outline"
                 onClick={() => handleOAuthLogin("github", {
-                    setOAuthLoading,
+                    dispatch,
                     signInWithGoogle,
                     signInWithGithub,
                 })}>

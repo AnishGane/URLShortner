@@ -1,4 +1,6 @@
-export const FAQS = [
+import type { Faq, Feature } from "@/types";
+
+export const FAQS: Faq[] = [
   {
     id: 1,
     value: "what-is-url-shortener",
@@ -36,7 +38,7 @@ export const FAQS = [
   },
 ];
 
-export const features = [
+export const features: Feature[] = [
   {
     id: 1,
     title: "Search your Links",
