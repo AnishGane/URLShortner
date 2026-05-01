@@ -1,5 +1,5 @@
 import { supabase, supabaseUrl } from "@/db/supabase";
-import { handleOAuthProfile } from "@/lib/helper";
+import { buildRedirectUrl, handleOAuthProfile } from "@/lib/helper";
 import type { Action, AuthContextType, State } from "@/types";
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 
@@ -139,11 +139,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const signInWithGoogle = async () => {
 
         dispatch({ type: "SET_OAUTH_LOADING", payload: "google" });
+        const createNew = new URLSearchParams(window.location.search).get("createNew");
+        if (createNew) {
+            localStorage.setItem("createNew", createNew);
+        }
 
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${window.location.origin}/auth/callback${window.location.search || ''}`,
+                redirectTo: buildRedirectUrl(),
             }
         })
 
@@ -156,11 +160,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const signInWithGithub = async () => {
 
         dispatch({ type: "SET_OAUTH_LOADING", payload: "github" });
+        const createNew = new URLSearchParams(window.location.search).get("createNew");
+        if (createNew) {
+            localStorage.setItem("createNew", createNew);
+        }
 
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "github",
             options: {
-                redirectTo: `${window.location.origin}/auth/callback${window.location.search || ''}`,
+                redirectTo: buildRedirectUrl(),
             },
         });
 

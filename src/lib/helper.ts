@@ -191,3 +191,17 @@ export const formatDate = (dateStr?: string | null) => {
     return "-";
   }
 };
+
+export const buildRedirectUrl = () => {
+  const params = new URLSearchParams(window.location.search);
+
+  const createNew = params.get("createNew");
+
+  const url = new URL(`${window.location.origin}/auth/callback`);
+
+  if (createNew) {
+    url.searchParams.set("createNew", createNew);
+  }
+
+  return url.toString();
+};
