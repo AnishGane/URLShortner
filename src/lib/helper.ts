@@ -4,6 +4,7 @@ import QRCode from "qrcode";
 import type { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import type { Action } from "@/types";
+import { format } from "date-fns/format";
 
 const parser = new UAParser();
 
@@ -179,5 +180,14 @@ export const handleOAuthLogin = async (
     toast.error(message);
 
     dispatch({ type: "SET_OAUTH_LOADING", payload: null });
+  }
+};
+
+export const formatDate = (dateStr?: string | null) => {
+  if (!dateStr) return "-";
+  try {
+    return format(new Date(dateStr), "dd/MM/yyyy");
+  } catch {
+    return "-";
   }
 };
